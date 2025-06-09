@@ -76,15 +76,35 @@
   </footer>
 
   <img src="builder.gif" alt="builder" id="builder" />
-  <script>
-    const builder = document.getElementById('builder');
-    document.body.addEventListener('click', () => {
-      builder.style.opacity = 1;
-      clearTimeout(builder._timeout);
-      builder._timeout = setTimeout(() => {
-        builder.style.opacity = 0;
-      }, 1200);
-    });
-  </script>
+<script>
+  const builder = document.getElementById('builder');
+
+  const phrases = [
+    "Building...",
+    "Loading new ideas...",
+    "Adding features...",
+    "Almost there..."
+  ];
+
+  document.body.addEventListener('click', () => {
+    // Mostra la GIF
+    builder.style.opacity = 1;
+    clearTimeout(builder._timeout);
+
+    // Mostra frase casuale
+    const notice = document.createElement('div');
+    notice.textContent = phrases[Math.floor(Math.random() * phrases.length)];
+    notice.style =
+      "position: fixed; bottom: 120px; right: 20px; background: #eee;" +
+      "color: #333; padding: 5px 10px; border-radius: 4px; font-size: .9em;";
+    document.body.appendChild(notice);
+
+    // Nascondi tutto dopo 1.2 s
+    builder._timeout = setTimeout(() => {
+      builder.style.opacity = 0;
+      notice.remove();
+    }, 1200);
+  });
+</script>
 </body>
 </html>
