@@ -51,6 +51,15 @@
       font-size: 0.8em;
       color: #555;
     }
+    #builder {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 80px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
   </style>
 </head>
 <body>
@@ -65,30 +74,17 @@
   <footer>
     &copy; 2025 Manti Industries. All rights reserved.
   </footer>
-  <!-- Aggiungi dentro <body> appena dopo <footer> -->
-<img src="builder.gif" alt="builder" id="builder" style="
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 80px;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s;
-" />
 
-<script>
-  const builder = document.getElementById('builder');
-
-  document.body.addEventListener('click', () => {
-    builder.style.opacity = 1;
-
-    clearTimeout(builder._timeout);
-    builder._timeout = setTimeout(() => {
-      builder.style.opacity = 0;
-    }, 1200); // mostra per 1.2 secondi
-  });
-</script>
-
+  <img src="builder.gif" alt="builder" id="builder" />
+  <script>
+    const builder = document.getElementById('builder');
+    document.body.addEventListener('click', () => {
+      builder.style.opacity = 1;
+      clearTimeout(builder._timeout);
+      builder._timeout = setTimeout(() => {
+        builder.style.opacity = 0;
+      }, 1200);
+    });
+  </script>
 </body>
 </html>
-
