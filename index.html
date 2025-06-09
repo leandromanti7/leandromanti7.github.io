@@ -16,6 +16,7 @@
       justify-content: center;
       height: 100vh;
       text-align: center;
+      overflow: hidden;
     }
     img.logo {
       width: 240px;
@@ -53,12 +54,11 @@
     }
     #builder {
       position: fixed;
-      bottom: 20px;
-      right: 20px;
-      width: 80px;
+      width: 120px;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.3s;
+      z-index: 999;
     }
   </style>
 </head>
@@ -76,35 +76,47 @@
   </footer>
 
   <img src="builder.gif" alt="builder" id="builder" />
-<script>
-  const builder = document.getElementById('builder');
 
-  const phrases = [
-    "Building...",
-    "Loading new ideas...",
-    "Adding features...",
-    "Almost there..."
-  ];
+  <script>
+    const builder = document.getElementById('builder');
+    const phrases = [
+      "Building...",
+      "Almost there...",
+      "Compiling ideas...",
+      "Welding pixels...",
+      "Tightening bolts..."
+    ];
 
-  document.body.addEventListener('click', () => {
-    // Mostra la GIF
-    builder.style.opacity = 1;
-    clearTimeout(builder._timeout);
+    document.body.addEventListener('click', (e) => {
+      const phrase = phrases[Math.floor(Math.random() * phrases.length)];
 
-    // Mostra frase casuale
-    const notice = document.createElement('div');
-    notice.textContent = phrases[Math.floor(Math.random() * phrases.length)];
-    notice.style =
-      "position: fixed; bottom: 120px; right: 20px; background: #eee;" +
-      "color: #333; padding: 5px 10px; border-radius: 4px; font-size: .9em;";
-    document.body.appendChild(notice);
+      // Random position within the viewport
+      const x = Math.random() * (window.innerWidth - 100);
+      const y = Math.random() * (window.innerHeight - 100);
 
-    // Nascondi tutto dopo 1.2 s
-    builder._timeout = setTimeout(() => {
-      builder.style.opacity = 0;
-      notice.remove();
-    }, 1200);
-  });
-</script>
+      builder.style.left = x + 'px';
+      builder.style.top = y + 'px';
+      builder.style.opacity = 1;
+
+      const notice = document.createElement('div');
+      notice.textContent = phrase;
+      notice.style.position = 'fixed';
+      notice.style.left = (x + 90) + 'px';
+      notice.style.top = (y + 20) + 'px';
+      notice.style.background = '#eee';
+      notice.style.color = '#333';
+      notice.style.padding = '5px 10px';
+      notice.style.borderRadius = '4px';
+      notice.style.fontSize = '0.9em';
+      notice.style.zIndex = 998;
+      document.body.appendChild(notice);
+
+      clearTimeout(builder._timeout);
+      builder._timeout = setTimeout(() => {
+        builder.style.opacity = 0;
+        notice.remove();
+      }, 1200);
+    });
+  </script>
 </body>
 </html>
