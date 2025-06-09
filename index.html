@@ -54,7 +54,7 @@
     }
     #builder {
       position: fixed;
-      width: 120px;
+      width: 150px;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.3s;
@@ -87,12 +87,11 @@
       "Tightening bolts..."
     ];
 
-    document.body.addEventListener('click', (e) => {
+    document.body.addEventListener('click', () => {
       const phrase = phrases[Math.floor(Math.random() * phrases.length)];
 
-      // Random position within the viewport
-      const x = Math.random() * (window.innerWidth - 100);
-      const y = Math.random() * (window.innerHeight - 100);
+      const x = Math.random() * (window.innerWidth - 180);
+      const y = Math.random() * (window.innerHeight - 180);
 
       builder.style.left = x + 'px';
       builder.style.top = y + 'px';
@@ -101,8 +100,8 @@
       const notice = document.createElement('div');
       notice.textContent = phrase;
       notice.style.position = 'fixed';
-      notice.style.left = (x + 90) + 'px';
-      notice.style.top = (y + 20) + 'px';
+      notice.style.left = (x + 160) + 'px';
+      notice.style.top = (y + 30) + 'px';
       notice.style.background = '#eee';
       notice.style.color = '#333';
       notice.style.padding = '5px 10px';
@@ -111,9 +110,13 @@
       notice.style.zIndex = 998;
       document.body.appendChild(notice);
 
+      // Hide builder and remove phrase independently
       clearTimeout(builder._timeout);
       builder._timeout = setTimeout(() => {
         builder.style.opacity = 0;
+      }, 1200);
+
+      setTimeout(() => {
         notice.remove();
       }, 1200);
     });
