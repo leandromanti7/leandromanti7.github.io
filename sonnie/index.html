@@ -9,12 +9,24 @@
 <body>
   <div class="terminal">
     <h1>Sonnie Terminal</h1>
-    <div id="chat-box"></div>
-    <form id="chat-form">
-      <textarea id="prompt" placeholder="Ask Sonnie…" required></textarea>
-      <button type="submit">Send</button>
-    </form>
+
+    <!-- Sezione login -->
+    <div id="login-section">
+      <input type="password" id="access-code" placeholder="Enter secret key…" required />
+      <button onclick="unlockChat()">Unlock</button>
+      <p id="login-error" style="color:red; display:none;">Wrong key. Try again.</p>
+    </div>
+
+    <!-- Sezione chat nascosta finché non si sblocca -->
+    <div id="chat-section" style="display:none;">
+      <div id="chat-box"></div>
+      <form id="chat-form">
+        <textarea id="prompt" placeholder="Ask Sonnie…" required></textarea>
+        <button type="submit">Send</button>
+      </form>
+    </div>
   </div>
+
   <script src="script.js"></script>
 </body>
 </html>
