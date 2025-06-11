@@ -1,9 +1,26 @@
 const SECRET_KEY = "banana42"; 
 let accessGranted = false;
-let voiceEnabled = true; // ✅ nuovo stato voce
-
-// Salva la cronologia della conversazione
+let voiceEnabled = true;
+let audio = null; // nuovo per riproduzione vocale
 let conversation = [];
+
+// 🔊 Funzione per far parlare Sonnie usando il backend Google Cloud
+async function speak(text) {
+  if (!voiceEnabled || !text) return;
+  try {
+    const res = await fetch("https://59dd1aea-569d-4810-bc96-527af4969cc4-00-36bmgfvj5e4u2.janeway.replit.dev/speak", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text })
+    });
+    const blob = await res.blob();
+    if (audio) audio.pause();
+    audio = new Audio(URL.createObjectURL(blob));
+    audio.play();
+  } catch (err) {
+    console.error("Errore nella sintesi vocale:", err);
+  }
+}
 
 function unlockChat() {
   const code = document.getElementById("access-code").value.trim();
@@ -13,8 +30,6 @@ function unlockChat() {
     accessGranted = true;
     document.getElementById("login-section").style.display = "none";
     document.getElementById("chat-section").style.display = "block";
-
-    // Prompt iniziale opzionale
     conversation = [
       {
         role: "system",
@@ -59,14 +74,7 @@ document.getElementById("chat-form").addEventListener("submit", async function(e
     box.appendChild(botDiv);
     box.scrollTop = box.scrollHeight;
 
-    // 🔊 Fai parlare Sonnie se attivo
-    if (voiceEnabled) {
-      const utterance = new SpeechSynthesisUtterance(reply);
-      utterance.lang = "it-IT";
-      utterance.rate = 1;
-      utterance.pitch = 1;
-      speechSynthesis.speak(utterance);
-    }
+    speak(reply); // 🔈 usa Google Cloud TTS
 
   } catch (err) {
     const errorDiv = document.createElement("div");
@@ -82,10 +90,9 @@ micHint.id = "mic-hint";
 micHint.textContent = "🎙️ Prima volta? Consenti l'uso del microfono per parlare con Sonnie!";
 document.body.appendChild(micHint);
 
-// Pulsante speak (già esistente nella tua pagina HTML)
 speakBtn.addEventListener("click", startVoice);
 
-// 🔇 Pulsante per attivare/disattivare la voce
+// 🔇 Bottone per attivare/disattivare voce
 const toggleVoiceBtn = document.createElement("button");
 toggleVoiceBtn.textContent = "🔊 Voce: ON";
 toggleVoiceBtn.style.position = "fixed";
@@ -105,10 +112,9 @@ toggleVoiceBtn.addEventListener("click", () => {
   toggleVoiceBtn.textContent = voiceEnabled ? "🔊 Voce: ON" : "🔇 Voce: OFF";
 });
 
-// 🎤 Funzione per attivare il riconoscimento vocale
+// 🎤 Riconoscimento vocale
 function startVoice() {
   micHint.textContent = "🎙️ Sto ascoltando...";
-
   const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
   recognition.lang = "it-IT";
   recognition.interimResults = false;
