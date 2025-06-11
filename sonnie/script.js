@@ -1,9 +1,8 @@
 document.getElementById("chat-form").addEventListener("submit", async function(e) {
   e.preventDefault();
-  const key = document.getElementById("key").value.trim();
   const prompt = document.getElementById("prompt").value.trim();
   const box = document.getElementById("chat-box");
-  if (!key || !prompt) return;
+  if (!prompt) return;
 
   const userMsg = document.createElement("div");
   userMsg.textContent = "> " + prompt;
@@ -13,12 +12,12 @@ document.getElementById("chat-form").addEventListener("submit", async function(e
   try {
     const res = await fetch("https://sonnie-terminal.replit.app/chat", {
       method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({ key, prompt })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: prompt })
     });
     const data = await res.json();
     const botMsg = document.createElement("div");
-    botMsg.textContent = data.reply || "[No reply]";
+    botMsg.textContent = data.response || "[No reply]";
     box.appendChild(botMsg);
     box.scrollTop = box.scrollHeight;
   } catch (err) {
