@@ -1,5 +1,6 @@
 const SECRET_KEY = "banana42"; 
 let accessGranted = false;
+let voiceEnabled = true; // ✅ nuovo stato voce
 
 // Salva la cronologia della conversazione
 let conversation = [];
@@ -57,6 +58,16 @@ document.getElementById("chat-form").addEventListener("submit", async function(e
     botDiv.textContent = reply;
     box.appendChild(botDiv);
     box.scrollTop = box.scrollHeight;
+
+    // 🔊 Fai parlare Sonnie se attivo
+    if (voiceEnabled) {
+      const utterance = new SpeechSynthesisUtterance(reply);
+      utterance.lang = "it-IT";
+      utterance.rate = 1;
+      utterance.pitch = 1;
+      speechSynthesis.speak(utterance);
+    }
+
   } catch (err) {
     const errorDiv = document.createElement("div");
     errorDiv.textContent = "[Error contacting Sonnie]";
@@ -71,7 +82,28 @@ micHint.id = "mic-hint";
 micHint.textContent = "🎙️ Prima volta? Consenti l'uso del microfono per parlare con Sonnie!";
 document.body.appendChild(micHint);
 
+// Pulsante speak (già esistente nella tua pagina HTML)
 speakBtn.addEventListener("click", startVoice);
+
+// 🔇 Pulsante per attivare/disattivare la voce
+const toggleVoiceBtn = document.createElement("button");
+toggleVoiceBtn.textContent = "🔊 Voce: ON";
+toggleVoiceBtn.style.position = "fixed";
+toggleVoiceBtn.style.bottom = "70px";
+toggleVoiceBtn.style.right = "20px";
+toggleVoiceBtn.style.zIndex = 999;
+toggleVoiceBtn.style.background = "#222";
+toggleVoiceBtn.style.color = "#ffcc00";
+toggleVoiceBtn.style.border = "1px solid #555";
+toggleVoiceBtn.style.padding = "8px 12px";
+toggleVoiceBtn.style.fontSize = "0.85em";
+toggleVoiceBtn.style.cursor = "pointer";
+document.body.appendChild(toggleVoiceBtn);
+
+toggleVoiceBtn.addEventListener("click", () => {
+  voiceEnabled = !voiceEnabled;
+  toggleVoiceBtn.textContent = voiceEnabled ? "🔊 Voce: ON" : "🔇 Voce: OFF";
+});
 
 // 🎤 Funzione per attivare il riconoscimento vocale
 function startVoice() {
