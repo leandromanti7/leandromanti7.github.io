@@ -10,7 +10,7 @@ document.getElementById("chat-form").addEventListener("submit", async function(e
   box.scrollTop = box.scrollHeight;
 
   try {
-    const res = await fetch("https://sonnie-terminal.replit.app/chat", {
+    const res = await fetch("https://59dd1aea-569d-4810-bc96-527af4969cc4-00-36bmgfvj5e4u2.janeway.replit.dev/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message: prompt })
