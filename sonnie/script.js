@@ -13,7 +13,7 @@ function unlockChat() {
     document.getElementById("login-section").style.display = "none";
     document.getElementById("chat-section").style.display = "block";
 
-    // Prompt iniziale opzionale (puoi anche rimuoverlo se il backend lo ha già)
+    // Prompt iniziale opzionale
     conversation = [
       {
         role: "system",
@@ -33,11 +33,9 @@ document.getElementById("chat-form").addEventListener("submit", async function(e
   const box = document.getElementById("chat-box");
   if (!prompt) return;
 
-  // Aggiungi messaggio dell'utente alla conversazione
   const userMsg = { role: "user", content: prompt };
   conversation.push(userMsg);
 
-  // Mostra il messaggio nel box
   const userDiv = document.createElement("div");
   userDiv.textContent = "> " + prompt;
   box.appendChild(userDiv);
@@ -47,13 +45,12 @@ document.getElementById("chat-form").addEventListener("submit", async function(e
     const res = await fetch("https://59dd1aea-569d-4810-bc96-527af4969cc4-00-36bmgfvj5e4u2.janeway.replit.dev/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messages: conversation }) // invio corretto
+      body: JSON.stringify({ messages: conversation })
     });
 
     const data = await res.json();
     const reply = data.response || "[No reply]";
 
-    // Aggiungi risposta alla conversazione
     conversation.push({ role: "assistant", content: reply });
 
     const botDiv = document.createElement("div");
@@ -68,18 +65,41 @@ document.getElementById("chat-form").addEventListener("submit", async function(e
   }
 });
 
+// 🎤 VOICE UI SETUP
+const micHint = document.createElement("div");
+micHint.id = "mic-hint";
+micHint.textContent = "🎙️ Prima volta? Consenti l'uso del microfono per parlare con Sonnie!";
+document.body.appendChild(micHint);
+
+const speakBtn = document.createElement("button");
+speakBtn.textContent = "🎤 Speak";
+speakBtn.style.marginTop = "10px";
+document.getElementById("chat-form").appendChild(speakBtn);
+
+speakBtn.addEventListener("click", startVoice);
+
 // 🎤 Funzione per attivare il riconoscimento vocale
 function startVoice() {
-  const hint = document.getElementById("mic-hint");
-  if (hint) hint.style.display = "none";
+  micHint.textContent = "🎙️ Sto ascoltando...";
 
   const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
   recognition.lang = "it-IT";
-  recognition.start();
+  recognition.interimResults = false;
+  recognition.continuous = false;
 
   recognition.onresult = function(event) {
     const transcript = event.results[0][0].transcript;
     document.getElementById("prompt").value = transcript;
     document.getElementById("chat-form").dispatchEvent(new Event("submit"));
   };
+
+  recognition.onerror = function() {
+    micHint.textContent = "❌ Errore nell'ascolto. Riprova.";
+  };
+
+  recognition.onend = function() {
+    micHint.textContent = "🎙️ Premi Speak per parlare con Sonnie.";
+  };
+
+  recognition.start();
 }
