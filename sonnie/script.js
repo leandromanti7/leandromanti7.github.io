@@ -71,11 +71,6 @@ micHint.id = "mic-hint";
 micHint.textContent = "🎙️ Prima volta? Consenti l'uso del microfono per parlare con Sonnie!";
 document.body.appendChild(micHint);
 
-const speakBtn = document.createElement("button");
-speakBtn.textContent = "🎤 Speak";
-speakBtn.style.marginTop = "10px";
-document.getElementById("chat-form").appendChild(speakBtn);
-
 speakBtn.addEventListener("click", startVoice);
 
 // 🎤 Funzione per attivare il riconoscimento vocale
