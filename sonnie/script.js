@@ -66,6 +66,20 @@ document.getElementById("chat-form").addEventListener("submit", async function(e
     box.appendChild(errorDiv);
     box.scrollTop = box.scrollHeight;
   }
-
-  document.getElementById("prompt").value = "";
 });
+
+// 🎤 Funzione per attivare il riconoscimento vocale
+function startVoice() {
+  const hint = document.getElementById("mic-hint");
+  if (hint) hint.style.display = "none";
+
+  const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+  recognition.lang = "it-IT";
+  recognition.start();
+
+  recognition.onresult = function(event) {
+    const transcript = event.results[0][0].transcript;
+    document.getElementById("prompt").value = transcript;
+    document.getElementById("chat-form").dispatchEvent(new Event("submit"));
+  };
+}
