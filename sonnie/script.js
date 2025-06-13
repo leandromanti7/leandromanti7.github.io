@@ -1,10 +1,9 @@
-const SECRET_KEY = "banana42"; 
+const SECRET_KEY = "aaaa"; 
 let accessGranted = false;
 let voiceEnabled = true;
-let audio = null; // nuovo per riproduzione vocale
+let audio = null;
 let conversation = [];
 
-// 🔊 Funzione per far parlare Sonnie usando il backend Google Cloud
 async function speak(text) {
   if (!voiceEnabled || !text) return;
   try {
@@ -13,10 +12,21 @@ async function speak(text) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text })
     });
+
     const blob = await res.blob();
-    if (audio) audio.pause();
+    if (audio) {
+      audio.pause();
+      audio = null;
+    }
+
     audio = new Audio(URL.createObjectURL(blob));
-    audio.play();
+
+    // Attendi che l'audio sia pronto prima di riprodurre
+    audio.oncanplaythrough = () => {
+      audio.play().catch(err => {
+        console.warn("Impossibile riprodurre audio:", err);
+      });
+    };
   } catch (err) {
     console.error("Errore nella sintesi vocale:", err);
   }
@@ -74,7 +84,7 @@ document.getElementById("chat-form").addEventListener("submit", async function(e
     box.appendChild(botDiv);
     box.scrollTop = box.scrollHeight;
 
-    speak(reply); // 🔈 usa Google Cloud TTS
+    speak(reply);
 
   } catch (err) {
     const errorDiv = document.createElement("div");
@@ -115,7 +125,16 @@ toggleVoiceBtn.addEventListener("click", () => {
 // 🎤 Riconoscimento vocale
 function startVoice() {
   micHint.textContent = "🎙️ Sto ascoltando...";
-  const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+    micHint.textContent = "❌ Il riconoscimento vocale non è supportato su questo dispositivo.";
+    console.warn("SpeechRecognition non supportato");
+    return;
+  }
+
+  const recognition = new SpeechRecognition();
   recognition.lang = "it-IT";
   recognition.interimResults = false;
   recognition.continuous = false;
@@ -126,13 +145,18 @@ function startVoice() {
     document.getElementById("chat-form").dispatchEvent(new Event("submit"));
   };
 
-  recognition.onerror = function() {
-    micHint.textContent = "❌ Errore nell'ascolto. Riprova.";
+  recognition.onerror = function(event) {
+    micHint.textContent = "❌ Errore nell'ascolto: " + event.error;
+    console.warn("SpeechRecognition error:", event.error);
   };
 
   recognition.onend = function() {
     micHint.textContent = "🎙️ Premi Speak per parlare con Sonnie.";
   };
 
-  recognition.start();
+  try {
+    recognition.start();
+  } catch (e) {
+    console.warn("Errore avvio riconoscimento vocale:", e);
+  }
 }
