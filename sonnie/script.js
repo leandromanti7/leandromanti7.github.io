@@ -15,25 +15,29 @@ window.addEventListener("DOMContentLoaded", () => {
   if (isInWebView()) {
     const warning = document.createElement("div");
     warning.style.position = "fixed";
-    warning.style.bottom = "0";
+    warning.style.top = "0";
     warning.style.left = "0";
-    warning.style.right = "0";
-    warning.style.background = "#222";
+    warning.style.width = "100%";
+    warning.style.height = "100%";
+    warning.style.background = "rgba(0,0,0,0.95)";
     warning.style.color = "#fff";
-    warning.style.padding = "12px";
+    warning.style.padding = "20px";
     warning.style.textAlign = "center";
     warning.style.zIndex = 10000;
-    warning.innerHTML = `⚠️ Per usare voce e microfono su Sonnie, apri il sito in Safari o Chrome.<br>`;
+    warning.style.display = "flex";
+    warning.style.flexDirection = "column";
+    warning.style.justifyContent = "center";
+    warning.innerHTML = `⚠️ Il browser interno (Instagram, WhatsApp, ecc.) non supporta microfono o voce.<br><br>Apri il sito nel browser per usare Sonnie al 100%.<br>`;
 
     const openBtn = document.createElement("button");
     openBtn.textContent = "Apri in Browser";
-    openBtn.style.marginTop = "8px";
+    openBtn.style.marginTop = "20px";
     openBtn.style.background = "#ffcc00";
     openBtn.style.color = "#000";
     openBtn.style.border = "none";
-    openBtn.style.padding = "6px 12px";
+    openBtn.style.padding = "10px 20px";
     openBtn.style.cursor = "pointer";
-    openBtn.style.fontSize = "0.9em";
+    openBtn.style.fontSize = "1em";
 
     openBtn.onclick = () => {
       const url = window.location.href;
