@@ -10,10 +10,38 @@ function isInWebView() {
   return /FBAN|FBAV|Instagram|Line|Twitter|WhatsApp/i.test(ua);
 }
 
-// 💡 Mostra avviso se in WebView
+// 💡 Mostra avviso + pulsante se in WebView
 window.addEventListener("DOMContentLoaded", () => {
   if (isInWebView()) {
-    alert("⚠️ Per usare voce e microfono su Sonnie, apri il sito in Safari o Chrome.");
+    const warning = document.createElement("div");
+    warning.style.position = "fixed";
+    warning.style.bottom = "0";
+    warning.style.left = "0";
+    warning.style.right = "0";
+    warning.style.background = "#222";
+    warning.style.color = "#fff";
+    warning.style.padding = "12px";
+    warning.style.textAlign = "center";
+    warning.style.zIndex = 10000;
+    warning.innerHTML = `⚠️ Per usare voce e microfono su Sonnie, apri il sito in Safari o Chrome.<br>`;
+
+    const openBtn = document.createElement("button");
+    openBtn.textContent = "Apri in Browser";
+    openBtn.style.marginTop = "8px";
+    openBtn.style.background = "#ffcc00";
+    openBtn.style.color = "#000";
+    openBtn.style.border = "none";
+    openBtn.style.padding = "6px 12px";
+    openBtn.style.cursor = "pointer";
+    openBtn.style.fontSize = "0.9em";
+
+    openBtn.onclick = () => {
+      const url = window.location.href;
+      window.open(url, "_blank");
+    };
+
+    warning.appendChild(openBtn);
+    document.body.appendChild(warning);
   }
 });
 
