@@ -109,8 +109,9 @@
     Join us as we shape ideas, share insights, and build something that matters.
   </p>
   <div class="notice">This website is under construction. Stay tuned!</div>
-  <button class="button" onclick="location.href='sonnie/index.html'">Talk to Sonnie</button>
-  <a href="./" target="_blank" rel="noopener" class="button">Apri ora nel browser</a>
+
+  <button class="button" id="btn-sonnie" onclick="location.href='sonnie/index.html'" style="display:none;">Talk to Sonnie</button>
+  <a href="./" target="_blank" rel="noopener" class="button" id="btn-open-browser" style="display:none;">Apri ora nel browser</a>
 
   <div id="social-warning">
     ⚠️ Stai usando un'app come Instagram o TikTok.<br>
@@ -135,14 +136,11 @@
 
     document.body.addEventListener('click', () => {
       const phrase = phrases[Math.floor(Math.random() * phrases.length)];
-
       const x = Math.random() * (window.innerWidth - 180);
       const y = Math.random() * (window.innerHeight - 180);
-
       builder.style.left = x + 'px';
       builder.style.top = y + 'px';
       builder.style.opacity = 1;
-
       const notice = document.createElement('div');
       notice.textContent = phrase;
       notice.style.position = 'fixed';
@@ -155,22 +153,22 @@
       notice.style.fontSize = '0.9em';
       notice.style.zIndex = 998;
       document.body.appendChild(notice);
-
       clearTimeout(builder._timeout);
       builder._timeout = setTimeout(() => {
         builder.style.opacity = 0;
       }, 1200);
-
       setTimeout(() => {
         notice.remove();
       }, 1200);
     });
 
-    // Rileva browser social e mostra avviso
     const ua = navigator.userAgent.toLowerCase();
     const fromSocial = ua.includes("instagram") || ua.includes("tiktok") || ua.includes("fbav");
     if (fromSocial) {
       document.getElementById("social-warning").style.display = "block";
+      document.getElementById("btn-open-browser").style.display = "inline-block";
+    } else {
+      document.getElementById("btn-sonnie").style.display = "inline-block";
     }
   </script>
 </body>
