@@ -80,7 +80,8 @@
     border: 1px solid #555;
     border-radius: 6px;
     margin-top: 20px;
-    font-size: 1em;
+    font-size: 1.2em;
+    font-weight: bold;
     display: none;
   }
   footer {
@@ -112,7 +113,7 @@
   <a href="./" target="_blank" rel="noopener" class="button">Apri ora nel browser</a>
 
   <div id="social-warning">
-    Stai usando un'app come Instagram o TikTok.<br>
+    ⚠️ Stai usando un'app come Instagram o TikTok.<br>
     Tocca ⋮ o ⠇ in alto e scegli <b>“Apri nel browser”</b> per continuare.
   </div>
 
@@ -165,15 +166,13 @@
       }, 1200);
     });
 
-    // Rileva browser social e prova ad aprire il sito nel browser
+    // Rileva browser social e mostra avviso
     const ua = navigator.userAgent.toLowerCase();
     const fromSocial = ua.includes("instagram") || ua.includes("tiktok") || ua.includes("fbav");
     if (fromSocial) {
-      try {
-        window.open(window.location.href, '_blank');
-      } catch (e) {}
       document.getElementById("social-warning").style.display = "block";
     }
   </script>
 </body>
 </html>
+
