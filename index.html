@@ -111,7 +111,6 @@
   <div class="notice">This website is under construction. Stay tuned!</div>
 
   <button class="button" id="btn-sonnie" onclick="location.href='sonnie/index.html'" style="display:none;">Talk to Sonnie</button>
-  <a href="./" target="_blank" rel="noopener" class="button" id="btn-open-browser" style="display:none;">Apri ora nel browser</a>
 
   <div id="social-warning">
     ⚠️ Stai usando un'app come Instagram o TikTok.<br>
@@ -166,11 +165,9 @@
     const fromSocial = ua.includes("instagram") || ua.includes("tiktok") || ua.includes("fbav");
     if (fromSocial) {
       document.getElementById("social-warning").style.display = "block";
-      document.getElementById("btn-open-browser").style.display = "inline-block";
     } else {
       document.getElementById("btn-sonnie").style.display = "inline-block";
     }
   </script>
 </body>
 </html>
-
