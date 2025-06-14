@@ -1,8 +1,21 @@
-const SECRET_KEY = "aaaa"; 
+const SECRET_KEY = "aaaa";
 let accessGranted = false;
 let voiceEnabled = true;
 let audio = null;
 let conversation = [];
+
+// 🔍 Rileva se siamo in una WebView (Instagram, WhatsApp, FB, ecc.)
+function isInWebView() {
+  const ua = navigator.userAgent || navigator.vendor || window.opera;
+  return /FBAN|FBAV|Instagram|Line|Twitter|WhatsApp/i.test(ua);
+}
+
+// 💡 Mostra avviso se in WebView
+window.addEventListener("DOMContentLoaded", () => {
+  if (isInWebView()) {
+    alert("⚠️ Per usare voce e microfono su Sonnie, apri il sito in Safari o Chrome.");
+  }
+});
 
 async function speak(text) {
   if (!voiceEnabled || !text) return;
@@ -21,7 +34,6 @@ async function speak(text) {
 
     audio = new Audio(URL.createObjectURL(blob));
 
-    // Attendi che l'audio sia pronto prima di riprodurre
     audio.oncanplaythrough = () => {
       audio.play().catch(err => {
         console.warn("Impossibile riprodurre audio:", err);
@@ -94,7 +106,6 @@ document.getElementById("chat-form").addEventListener("submit", async function(e
   }
 });
 
-// 🎤 VOICE UI SETUP
 const micHint = document.createElement("div");
 micHint.id = "mic-hint";
 micHint.textContent = "🎙️ Prima volta? Consenti l'uso del microfono per parlare con Sonnie!";
@@ -102,7 +113,6 @@ document.body.appendChild(micHint);
 
 speakBtn.addEventListener("click", startVoice);
 
-// 🔇 Bottone per attivare/disattivare voce
 const toggleVoiceBtn = document.createElement("button");
 toggleVoiceBtn.textContent = "🔊 Voce: ON";
 toggleVoiceBtn.style.position = "fixed";
@@ -122,10 +132,8 @@ toggleVoiceBtn.addEventListener("click", () => {
   toggleVoiceBtn.textContent = voiceEnabled ? "🔊 Voce: ON" : "🔇 Voce: OFF";
 });
 
-// 🎤 Riconoscimento vocale
 function startVoice() {
   micHint.textContent = "🎙️ Sto ascoltando...";
-
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
   if (!SpeechRecognition) {
