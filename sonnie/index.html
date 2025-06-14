@@ -1,8 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta property="og:title" content="Sonnie Terminal">
+  <meta property="og:description" content="Interagisci con Sonnie, l'assistente robotico vocale.">
+  <meta property="og:image" content="/path/to/anteprima.jpg"> <!-- Sostituisci con immagine reale -->
+  <meta property="og:url" content="https://manti-industries.com/sonnie">
+
   <title>Sonnie Terminal</title>
   <link rel="stylesheet" href="style.css"/>
 </head>
@@ -23,16 +30,12 @@
       <form id="chat-form">
         <textarea id="prompt" placeholder="Ask Sonnie…" required></textarea>
         <button type="submit">Send</button>
-        <button type="button" id="speakBtn">🎤 Speak</button> <!-- ✅ ID per JS -->
+        <button type="button" id="speakBtn">🎤 Speak</button>
       </form>
     </div>
   </div>
 
-  <!-- Messaggio microfono -->
-  <div id="mic-hint">🎙️ Prima volta? Consenti l'uso del microfono per parlare con Sonnie!</div>
-
   <!-- Bottone ON/OFF voce sarà generato da JS -->
-
-  <script src="script.js"></script>
+  <script src="script.js" defer></script>
 </body>
 </html>
