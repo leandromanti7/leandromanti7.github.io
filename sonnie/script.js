@@ -37,7 +37,6 @@ function isInWebView() {
 
 window.addEventListener("DOMContentLoaded", () => {
   sonnieImg = document.getElementById("sonnie-visual");
-  const speakBtn = document.getElementById("speakBtn");
 
   if (isInWebView()) {
     const warning = document.createElement("div");
@@ -64,7 +63,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   const micHint = document.createElement("div");
   micHint.id = "mic-hint";
-  micHint.textContent = "🎙️ Premi Speak per parlare con Sonnie.";
+  micHint.textContent = "🎙️ Tocca Sonnie per parlare.";
   document.body.appendChild(micHint);
 
   const toggleVoiceBtn = document.createElement("button");
@@ -81,7 +80,8 @@ window.addEventListener("DOMContentLoaded", () => {
     toggleVoiceBtn.textContent = voiceEnabled ? "🔊 Voce: ON" : "🔇 Voce: OFF";
   });
 
-  if (speakBtn) speakBtn.addEventListener("click", startVoice);
+  // ✅ CLICK SULL’IMMAGINE PER ATTIVARE IL MICROFONO
+  if (sonnieImg) sonnieImg.addEventListener("click", startVoice);
 });
 
 window.unlockChat = function () {
@@ -123,7 +123,6 @@ function startVoice() {
   recognition.onresult = function (event) {
     const transcript = event.results[0][0].transcript;
     micHint.textContent = "🧠 Elaborazione...";
-
     handleUserMessage(transcript);
   };
 
@@ -133,7 +132,7 @@ function startVoice() {
   };
 
   recognition.onend = function () {
-    micHint.textContent = "🎙️ Premi Speak per parlare con Sonnie.";
+    micHint.textContent = "🎙️ Tocca Sonnie per parlare.";
   };
 
   try {
@@ -186,8 +185,6 @@ async function speak(text) {
   if (!voiceEnabled || !text) return;
 
   setSonnieImage("speaking");
-
-  // forza aggiornamento del DOM prima di iniziare il fetch
   await new Promise(r => setTimeout(r, 50));
 
   try {
