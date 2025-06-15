@@ -183,8 +183,10 @@ async function handleUserMessage(text) {
 async function speak(text) {
   if (!voiceEnabled || !text) return;
 
-  setSonnieImage("speaking");
-  await new Promise(r => setTimeout(r, 50));
+    setSonnieImage("speaking"); // 👈 Cambio immagine subito prima della voce
+
+  // Forza ridisegno DOM prima di iniziare il fetch audio
+  await new Promise(r => requestAnimationFrame(r));
 
   try {
     const res = await fetch("https://59dd1aea-569d-4810-bc96-527af4969cc4-00-36bmgfvj5e4u2.janeway.replit.dev/speak", {
