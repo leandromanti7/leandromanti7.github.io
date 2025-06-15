@@ -132,8 +132,8 @@ async function speak(text) {
 
   setSonnieImage("speaking");
 
-  // Forza aggiornamento DOM prima del fetch
-  await new Promise(r => setTimeout(r, 50)); // puoi provare anche con 0
+  // Forza il rendering immediato dell'immagine prima del fetch
+  await new Promise(requestAnimationFrame);
 
   try {
     const res = await fetch("https://59dd1aea-569d-4810-bc96-527af4969cc4-00-36bmgfvj5e4u2.janeway.replit.dev/speak", {
@@ -154,6 +154,7 @@ async function speak(text) {
     setSonnieImage("idle");
   }
 }
+
 
 window.unlockChat = function () {
   const code = document.getElementById("access-code").value.trim();
