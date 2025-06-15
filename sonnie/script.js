@@ -184,16 +184,19 @@ async function handleUserMessage(text) {
 async function speak(text) {
   if (!voiceEnabled || !text) return;
 
-    setSonnieImage("speaking"); // 👈 Cambio immagine subito prima della voce
+  setSonnieImage("speaking");
 
-  // Forza ridisegno DOM prima di iniziare il fetch audio
   await new Promise(r => requestAnimationFrame(r));
+
+  // 🔍 Rilevamento lingua
+  const isEnglish = /[a-z]{3,}/i.test(text) && !/[àèéìòù]/i.test(text);
+  const lang = isEnglish ? "en-US" : "it-IT";
 
   try {
     const res = await fetch("https://59dd1aea-569d-4810-bc96-527af4969cc4-00-36bmgfvj5e4u2.janeway.replit.dev/speak", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text })
+      body: JSON.stringify({ text, lang }) // 👈 Passiamo anche la lingua
     });
 
     const blob = await res.blob();
@@ -208,3 +211,4 @@ async function speak(text) {
     setSonnieImage("idle");
   }
 }
+
