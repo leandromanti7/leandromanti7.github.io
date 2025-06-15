@@ -1,4 +1,4 @@
-const SECRET_KEY = "sss";
+const SECRET_KEY = "2035";
 let accessGranted = false;
 let voiceEnabled = true;
 let audio = null;
