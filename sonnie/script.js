@@ -3,14 +3,16 @@ let accessGranted = false;
 let voiceEnabled = true;
 let audio = null;
 let conversation = [];
+let speakingInterval = null;
+const sonnieImg = document.getElementById("sonnie-visual");
 
-// 🔍 Rileva se siamo in una WebView (Instagram, WhatsApp, FB, ecc.)
+// 🔍 Rileva WebView (Instagram, WhatsApp, FB, ecc.)
 function isInWebView() {
   const ua = navigator.userAgent || navigator.vendor || window.opera;
   return /FBAN|FBAV|Instagram|Line|Twitter|WhatsApp/i.test(ua);
 }
 
-// 💡 Mostra avviso + pulsante se in WebView
+// 💡 Mostra avviso se in WebView
 window.addEventListener("DOMContentLoaded", () => {
   if (isInWebView()) {
     const warning = document.createElement("div");
@@ -49,8 +51,33 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+function setSonnieImage(state) {
+  clearInterval(speakingInterval);
+
+  if (!sonnieImg) return;
+
+  switch (state) {
+    case "thinking":
+      sonnieImg.src = "img/sonnie_thinking.png";
+      break;
+    case "speaking":
+      let toggle = false;
+      speakingInterval = setInterval(() => {
+        toggle = !toggle;
+        sonnieImg.src = toggle
+          ? "img/sonnie_talking_1.png"
+          : "img/sonnie_talking_2.png";
+      }, 250);
+      break;
+    default: // idle
+      sonnieImg.src = "img/sonnie_home_1.png";
+  }
+}
+
 async function speak(text) {
   if (!voiceEnabled || !text) return;
+  setSonnieImage("speaking");
+
   try {
     const res = await fetch("https://59dd1aea-569d-4810-bc96-527af4969cc4-00-36bmgfvj5e4u2.janeway.replit.dev/speak", {
       method: "POST",
@@ -71,8 +98,14 @@ async function speak(text) {
         console.warn("Impossibile riprodurre audio:", err);
       });
     };
+
+    audio.onended = () => {
+      setSonnieImage("idle");
+    };
+
   } catch (err) {
     console.error("Errore nella sintesi vocale:", err);
+    setSonnieImage("idle");
   }
 }
 
@@ -90,6 +123,7 @@ function unlockChat() {
         content: "Sei Sonnie, un'entità robotica avanzata ispirata a I, Robot. Sei empatico, razionale e supporti gli umani con scienza, matematica e curiosità."
       }
     ];
+    setSonnieImage("idle");
   } else {
     errorMsg.style.display = "block";
   }
@@ -110,6 +144,8 @@ document.getElementById("chat-form").addEventListener("submit", async function(e
   userDiv.textContent = "> " + prompt;
   box.appendChild(userDiv);
   box.scrollTop = box.scrollHeight;
+
+  setSonnieImage("thinking");
 
   try {
     const res = await fetch("https://59dd1aea-569d-4810-bc96-527af4969cc4-00-36bmgfvj5e4u2.janeway.replit.dev/chat", {
@@ -135,6 +171,7 @@ document.getElementById("chat-form").addEventListener("submit", async function(e
     errorDiv.textContent = "[Error contacting Sonnie]";
     box.appendChild(errorDiv);
     box.scrollTop = box.scrollHeight;
+    setSonnieImage("idle");
   }
 });
 
