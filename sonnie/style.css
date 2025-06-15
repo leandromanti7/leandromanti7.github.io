@@ -8,11 +8,13 @@ body {
   align-items: center;
   height: 100vh;
   flex-direction: column;
+  position: relative;
 }
 
 .terminal {
   width: 90%;
   max-width: 1000px;
+  position: relative;
 }
 
 #chat-interface {
@@ -62,13 +64,14 @@ button {
   cursor: pointer;
 }
 
+/* 🔼 Mic-hint accanto al titolo */
 #mic-hint {
-  position: fixed;
-  bottom: 100px;
-  right: 20px;
+  position: absolute;
+  top: 10px;
+  left: 120px;
   background: #222;
   color: #ffcc00;
-  padding: 10px 15px;
+  padding: 8px 14px;
   border-radius: 6px;
   font-size: 0.9em;
   box-shadow: 0 0 10px rgba(255, 255, 0, 0.3);
@@ -80,6 +83,20 @@ button {
   0% { box-shadow: 0 0 5px rgba(255, 255, 0, 0.3); }
   50% { box-shadow: 0 0 15px rgba(255, 255, 0, 0.7); }
   100% { box-shadow: 0 0 5px rgba(255, 255, 0, 0.3); }
+}
+
+/* 🔼 Bottone voce in alto accanto al volto */
+#voice-toggle-btn {
+  position: absolute;
+  top: 90px;
+  right: 20px;
+  background: #222;
+  color: #ffcc00;
+  border: 1px solid #555;
+  padding: 6px 12px;
+  font-size: 0.85em;
+  cursor: pointer;
+  z-index: 999;
 }
 
 /* Responsive per mobile */
@@ -110,8 +127,13 @@ button {
   }
 
   #mic-hint {
-    bottom: 90px;
-    font-size: 0.8em;
+    top: 10px;
+    left: 110px;
+    font-size: 0.75em;
+  }
+
+  #voice-toggle-btn {
+    top: 82px;
     right: 10px;
   }
 }
