@@ -129,7 +129,11 @@ window.addEventListener("DOMContentLoaded", () => {
 
 async function speak(text) {
   if (!voiceEnabled || !text) return;
+
   setSonnieImage("speaking");
+
+  // Forza aggiornamento DOM prima del fetch
+  await new Promise(r => setTimeout(r, 50)); // puoi provare anche con 0
 
   try {
     const res = await fetch("https://59dd1aea-569d-4810-bc96-527af4969cc4-00-36bmgfvj5e4u2.janeway.replit.dev/speak", {
