@@ -28,7 +28,7 @@ body {
   border-radius: 12px;
   box-shadow: 0 0 10px #00ff8844;
   flex-shrink: 0;
-  display: block; /* assicurati che sia sempre visibile */
+  display: block;
   transition: opacity 0.3s ease-in-out;
 }
 
@@ -91,12 +91,20 @@ button {
 /* Responsive per mobile */
 @media (max-width: 768px) {
   #chat-interface {
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row; /* 👈 manteniamo affiancati */
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
   }
 
   #sonnie-visual {
-    max-width: 80%;
-    margin-bottom: 20px;
+    max-width: 45vw; /* 👈 un po' più piccolo su mobile */
+    margin-bottom: 0;
+  }
+
+  .chat-panel {
+    flex: 1;
+    min-width: 50vw;
   }
 }
+
