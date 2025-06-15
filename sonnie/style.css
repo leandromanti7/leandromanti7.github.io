@@ -81,23 +81,22 @@ button {
 #voice-toggle-btn {
   position: absolute;
   top: 10px;
-  right: 140px;  /* o dove preferisci */
-  background: #222;
-  color: #ffcc00;
-  border: 1px solid #555;
-  padding: 6px 10px;
-  font-size: 0.85em;
+  right: 140px;
+  background: #222 !important;
+  color: #ffcc00 !important;
+  border: 1px solid #555 !important;
+  padding: 6px 10px !important;
+  font-size: 0.85em !important;
   cursor: pointer;
   z-index: 999;
-  max-width: 130px;
-  width: auto;           /* ✅ forza larghezza solo quanto serve */
-  white-space: nowrap;   /* ✅ impedisce il ritorno a capo */
+  max-width: 120px;
+  width: auto !important;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  display: inline-block; /* ✅ evita che si espanda come blocco */
+  display: inline-block !important;
+  box-sizing: border-box;
 }
-
-
 
 @keyframes pulse {
   0% { box-shadow: 0 0 5px rgba(255, 255, 0, 0.3); }
