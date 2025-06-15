@@ -1,3 +1,4 @@
+
 const SECRET_KEY = "aaaa";
 let accessGranted = false;
 let voiceEnabled = true;
@@ -13,21 +14,20 @@ window.addEventListener("DOMContentLoaded", () => {
     clearInterval(speakingInterval);
     if (!sonnieImg) return;
 
-    switch (state) {
-      case "thinking":
-        sonnieImg.src = "img/sonnie_thinking.png";
-        break;
-      case "speaking":
-        let toggle = false;
-        speakingInterval = setInterval(() => {
-          toggle = !toggle;
-          sonnieImg.src = toggle
-            ? "img/sonnie_talking_1.png"
-            : "img/sonnie_talking_2.png";
-        }, 250);
-        break;
-      default: // idle
-        sonnieImg.src = "img/sonnie_home_1.png";
+    if (state === "speaking") {
+      // Imposta subito la prima immagine parlante per feedback visivo immediato
+      sonnieImg.src = "img/sonnie_talking_1.png";
+      let toggle = false;
+      speakingInterval = setInterval(() => {
+        toggle = !toggle;
+        sonnieImg.src = toggle
+          ? "img/sonnie_talking_1.png"
+          : "img/sonnie_talking_2.png";
+      }, 250);
+    } else if (state === "thinking") {
+      sonnieImg.src = "img/sonnie_thinking.png";
+    } else {
+      sonnieImg.src = "img/sonnie_home_1.png";
     }
   }
 
@@ -51,7 +51,7 @@ window.addEventListener("DOMContentLoaded", () => {
     warning.style.display = "flex";
     warning.style.flexDirection = "column";
     warning.style.justifyContent = "center";
-    warning.innerHTML = `⚠️ Il browser interno (Instagram, WhatsApp, ecc.) non supporta microfono o voce.<br><br>Apri il sito nel browser per usare Sonnie al 100%.<br>`;
+    warning.innerHTML = \`⚠️ Il browser interno (Instagram, WhatsApp, ecc.) non supporta microfono o voce.<br><br>Apri il sito nel browser per usare Sonnie al 100%.<br>\`;
 
     const openBtn = document.createElement("button");
     openBtn.textContent = "Apri in Browser";
@@ -237,4 +237,3 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   }
 });
-
