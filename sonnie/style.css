@@ -4,11 +4,10 @@ body {
   background: #0c0c0c;
   color: #00ff88;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  min-height: 100vh;
   flex-direction: column;
-  padding-top: 40px;
+  align-items: center;
+  min-height: 100vh;
+  padding-top: 60px;
   position: relative;
 }
 
@@ -19,7 +18,43 @@ body {
 }
 
 h1 {
-  margin-left: 20px;
+  margin: 0;
+  font-size: 2em;
+}
+
+/* ✅ Mic-hint accanto al titolo */
+#mic-hint {
+  position: absolute;
+  top: 10px;
+  left: 120px;
+  background: #222;
+  color: #ffcc00;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 0.9em;
+  box-shadow: 0 0 10px rgba(255, 255, 0, 0.3);
+  z-index: 999;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 5px rgba(255, 255, 0, 0.3); }
+  50% { box-shadow: 0 0 15px rgba(255, 255, 0, 0.7); }
+  100% { box-shadow: 0 0 5px rgba(255, 255, 0, 0.3); }
+}
+
+/* ✅ Bottone voce come piccolo pulsante in overlay */
+#voice-toggle-btn {
+  position: absolute;
+  top: 100px;
+  right: 20px;
+  background: #222;
+  color: #ffcc00;
+  border: 1px solid #555;
+  padding: 6px 12px;
+  font-size: 0.85em;
+  cursor: pointer;
+  z-index: 999;
 }
 
 #chat-interface {
@@ -35,13 +70,13 @@ h1 {
   height: auto;
   border-radius: 12px;
   box-shadow: 0 0 10px #00ff8844;
-  display: block;
   transition: opacity 0.3s ease-in-out;
   cursor: pointer;
 }
 
 #chat-box {
   width: 100%;
+  max-width: 600px;
   height: 400px;
   overflow-y: auto;
   background: #000;
@@ -63,53 +98,15 @@ button {
   cursor: pointer;
 }
 
-/* ✅ Mic-hint accanto al titolo */
-#mic-hint {
-  position: absolute;
-  top: 12px;
-  left: 120px;
-  background: #222;
-  color: #ffcc00;
-  padding: 8px 14px;
-  border-radius: 6px;
-  font-size: 0.9em;
-  box-shadow: 0 0 10px rgba(255, 255, 0, 0.3);
-  z-index: 999;
-  animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-  0% { box-shadow: 0 0 5px rgba(255, 255, 0, 0.3); }
-  50% { box-shadow: 0 0 15px rgba(255, 255, 0, 0.7); }
-  100% { box-shadow: 0 0 5px rgba(255, 255, 0, 0.3); }
-}
-
-/* ✅ Bottone voce accanto al volto */
-#voice-toggle-btn {
-  position: absolute;
-  top: 100px;
-  right: 20px;
-  background: #222;
-  color: #ffcc00;
-  border: 1px solid #555;
-  padding: 6px 12px;
-  font-size: 0.85em;
-  cursor: pointer;
-  z-index: 999;
-}
-
 /* ✅ Responsive */
 @media (max-width: 768px) {
   body {
-    padding-top: 60px;
     padding-left: 1em;
     padding-right: 1em;
-    align-items: stretch;
   }
 
   #sonnie-visual {
     max-width: 90vw;
-    margin: 0 auto;
   }
 
   #chat-box {
@@ -118,7 +115,7 @@ button {
   }
 
   #mic-hint {
-    top: 12px;
+    top: 10px;
     left: 100px;
     font-size: 0.75em;
   }
