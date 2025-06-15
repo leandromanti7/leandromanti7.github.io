@@ -179,8 +179,11 @@ window.unlockChat = function () {
 function startVoice() {
   const micHint = document.getElementById("mic-hint");
   micHint.textContent = "🎙️ Sto ascoltando...";
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
+  // ✅ Cambia immagine SUBITO appena premi il pulsante
+  setSonnieImage("speaking");
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SpeechRecognition) {
     micHint.textContent = "❌ Il riconoscimento vocale non è supportato su questo dispositivo.";
     console.warn("SpeechRecognition non supportato");
@@ -201,6 +204,7 @@ function startVoice() {
   recognition.onerror = function (event) {
     micHint.textContent = "❌ Errore nell'ascolto: " + event.error;
     console.warn("SpeechRecognition error:", event.error);
+    setSonnieImage("idle"); // fallback
   };
 
   recognition.onend = function () {
@@ -213,3 +217,4 @@ function startVoice() {
     console.warn("Errore avvio riconoscimento vocale:", e);
   }
 }
+
