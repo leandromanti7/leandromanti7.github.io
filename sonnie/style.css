@@ -28,6 +28,8 @@ body {
   border-radius: 12px;
   box-shadow: 0 0 10px #00ff8844;
   flex-shrink: 0;
+  display: block; /* assicurati che sia sempre visibile */
+  transition: opacity 0.3s ease-in-out;
 }
 
 .chat-panel {
