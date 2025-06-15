@@ -52,19 +52,18 @@ body {
 
 form {
   display: flex;
-  flex-direction: column;
+  justify-content: flex-start;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
-input, textarea, button {
+/* Solo il bottone resta attivo */
+button {
   font-family: monospace;
-  margin: 0.25em 0;
-  padding: 0.5em;
+  padding: 0.5em 1em;
   background: #000;
   color: #00ff88;
   border: 1px solid #00ff88;
-}
-
-button {
   cursor: pointer;
 }
 
@@ -91,14 +90,14 @@ button {
 /* Responsive per mobile */
 @media (max-width: 768px) {
   #chat-interface {
-    flex-direction: row; /* 👈 manteniamo affiancati */
+    flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
     align-items: flex-start;
   }
 
   #sonnie-visual {
-    max-width: 45vw; /* 👈 un po' più piccolo su mobile */
+    max-width: 45vw;
     margin-bottom: 0;
   }
 
