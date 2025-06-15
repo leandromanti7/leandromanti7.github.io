@@ -105,6 +105,7 @@ window.unlockChat = function () {
 };
 
 function startVoice() {
+  setSonnieImage("thinking"); // 👈 Cambio immagine immediato
   const micHint = document.getElementById("mic-hint");
   micHint.textContent = "🎙️ Sto ascoltando...";
 
@@ -152,8 +153,6 @@ async function handleUserMessage(text) {
   userDiv.textContent = "> " + text;
   box.appendChild(userDiv);
   box.scrollTop = box.scrollHeight;
-
-  setSonnieImage("thinking");
 
   try {
     const res = await fetch("https://59dd1aea-569d-4810-bc96-527af4969cc4-00-36bmgfvj5e4u2.janeway.replit.dev/chat", {
