@@ -21,6 +21,7 @@ body {
   align-items: flex-start;
   margin-top: 20px;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 #sonnie-visual {
@@ -31,6 +32,7 @@ body {
   flex-shrink: 0;
   display: block;
   transition: opacity 0.3s ease-in-out;
+  cursor: pointer;
 }
 
 .chat-panel {
@@ -51,13 +53,6 @@ body {
   margin-bottom: 0.5em;
 }
 
-form {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
 button {
   font-family: monospace;
   padding: 0.5em 1em;
@@ -69,7 +64,7 @@ button {
 
 #mic-hint {
   position: fixed;
-  bottom: 100px; /* sollevato per non coprire Speak */
+  bottom: 100px;
   right: 20px;
   background: #222;
   color: #ffcc00;
@@ -117,11 +112,6 @@ button {
   #mic-hint {
     bottom: 90px;
     font-size: 0.8em;
-  }
-
-  button#speakBtn {
-    width: 100%;
-    font-size: 1.2em;
+    right: 10px;
   }
 }
-
