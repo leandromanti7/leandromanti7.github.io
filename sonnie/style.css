@@ -13,6 +13,7 @@ body {
 .terminal {
   width: 90%;
   max-width: 1000px;
+  position: relative;
 }
 
 #chat-interface {
@@ -62,9 +63,10 @@ button {
   cursor: pointer;
 }
 
+/* 🔼 Spostato accanto al titolo */
 #mic-hint {
-  position: fixed;
-  bottom: 100px;
+  position: absolute;
+  top: 10px;
   right: 20px;
   background: #222;
   color: #ffcc00;
@@ -110,9 +112,9 @@ button {
   }
 
   #mic-hint {
-    bottom: 90px;
-    font-size: 0.8em;
+    top: 10px;
     right: 10px;
+    font-size: 0.8em;
   }
 
   button#speakBtn {
