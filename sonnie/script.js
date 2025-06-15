@@ -67,6 +67,7 @@ window.addEventListener("DOMContentLoaded", () => {
   document.body.appendChild(micHint);
 
   const toggleVoiceBtn = document.createElement("button");
+  toggleVoiceBtn.id = "voice-toggle-btn";
   toggleVoiceBtn.textContent = "🔊 Voce: ON";
   Object.assign(toggleVoiceBtn.style, {
     position: "fixed", bottom: "70px", right: "20px", zIndex: 999,
