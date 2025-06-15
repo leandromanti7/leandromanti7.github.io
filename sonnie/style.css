@@ -78,26 +78,6 @@ button {
   animation: pulse 1.5s infinite;
 }
 
-#voice-toggle-btn {
-  position: absolute;
-  top: 10px;
-  right: 140px;
-  background: #222 !important;
-  color: #ffcc00 !important;
-  border: 1px solid #555 !important;
-  padding: 6px 10px !important;
-  font-size: 0.85em !important;
-  cursor: pointer;
-  z-index: 999;
-  max-width: 120px;
-  width: auto !important;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: inline-block !important;
-  box-sizing: border-box;
-}
-
 @keyframes pulse {
   0% { box-shadow: 0 0 5px rgba(255, 255, 0, 0.3); }
   50% { box-shadow: 0 0 15px rgba(255, 255, 0, 0.7); }
