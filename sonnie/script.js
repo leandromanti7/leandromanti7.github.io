@@ -58,19 +58,19 @@ function setSonnieImage(state) {
 
   switch (state) {
     case "thinking":
-      sonnieImg.src = "img/sonnie_thinking.png";
+      sonnieImg.src = "sonnie/img/sonnie_thinking.png";
       break;
     case "speaking":
       let toggle = false;
       speakingInterval = setInterval(() => {
         toggle = !toggle;
         sonnieImg.src = toggle
-          ? "img/sonnie_talking_1.png"
-          : "img/sonnie_talking_2.png";
+          ? "sonnie/img/sonnie_talking_1.png"
+          : "sonnie/img/sonnie_talking_2.png";
       }, 250);
       break;
     default: // idle
-      sonnieImg.src = "img/sonnie_home_1.png";
+      sonnieImg.src = "sonnie/img/sonnie_home_1.png";
   }
 }
 
