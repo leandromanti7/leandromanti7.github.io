@@ -78,6 +78,19 @@ button {
   animation: pulse 1.5s infinite;
 }
 
+#voice-toggle-btn {
+  position: absolute;
+  top: 10px;
+  right: 160px; /* o 140px, regola in base a dove vuoi che stia */
+  background: #222;
+  color: #ffcc00;
+  border: 1px solid #555;
+  padding: 8px 12px;
+  font-size: 0.85em;
+  cursor: pointer;
+  z-index: 999;
+}
+
 @keyframes pulse {
   0% { box-shadow: 0 0 5px rgba(255, 255, 0, 0.3); }
   50% { box-shadow: 0 0 15px rgba(255, 255, 0, 0.7); }
