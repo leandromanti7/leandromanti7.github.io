@@ -16,7 +16,7 @@ function setSonnieImage(state) {
       sonnieImg.src = "img/sonnie_thinking.png";
       break;
     case "speaking":
-      sonnieImg.src = "img/sonnie_talking_1.png"; // visibile subito
+      sonnieImg.src = "img/sonnie_talking_1.png";
       let toggle = false;
       speakingInterval = setInterval(() => {
         toggle = !toggle;
@@ -64,7 +64,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   const micHint = document.createElement("div");
   micHint.id = "mic-hint";
-  micHint.textContent = "🎙️ Prima volta? Consenti l'uso del microfono per parlare con Sonnie!";
+  micHint.textContent = "🎙️ Premi Speak per parlare con Sonnie.";
   document.body.appendChild(micHint);
 
   const toggleVoiceBtn = document.createElement("button");
@@ -82,79 +82,7 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 
   if (speakBtn) speakBtn.addEventListener("click", startVoice);
-
-  document.getElementById("chat-form").addEventListener("submit", async function (e) {
-    e.preventDefault();
-    if (!accessGranted) return;
-
-    const prompt = document.getElementById("prompt").value.trim();
-    const box = document.getElementById("chat-box");
-    if (!prompt) return;
-
-    conversation.push({ role: "user", content: prompt });
-
-    const userDiv = document.createElement("div");
-    userDiv.textContent = "> " + prompt;
-    box.appendChild(userDiv);
-    box.scrollTop = box.scrollHeight;
-
-    setSonnieImage("thinking");
-
-    try {
-      const res = await fetch("https://59dd1aea-569d-4810-bc96-527af4969cc4-00-36bmgfvj5e4u2.janeway.replit.dev/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: conversation })
-      });
-
-      const data = await res.json();
-      const reply = data.response || "[No reply]";
-      conversation.push({ role: "assistant", content: reply });
-
-      const botDiv = document.createElement("div");
-      botDiv.textContent = reply;
-      box.appendChild(botDiv);
-      box.scrollTop = box.scrollHeight;
-
-      speak(reply);
-    } catch (err) {
-      const errorDiv = document.createElement("div");
-      errorDiv.textContent = "[Error contacting Sonnie]";
-      box.appendChild(errorDiv);
-      box.scrollTop = box.scrollHeight;
-      setSonnieImage("idle");
-    }
-  });
 });
-
-async function speak(text) {
-  if (!voiceEnabled || !text) return;
-
-  setSonnieImage("speaking");
-
-  // Forza il rendering immediato dell'immagine prima del fetch
-  await new Promise(requestAnimationFrame);
-
-  try {
-    const res = await fetch("https://59dd1aea-569d-4810-bc96-527af4969cc4-00-36bmgfvj5e4u2.janeway.replit.dev/speak", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text })
-    });
-
-    const blob = await res.blob();
-    if (audio) audio.pause();
-    audio = new Audio(URL.createObjectURL(blob));
-
-    audio.oncanplaythrough = () => audio.play().catch(err => console.warn("Errore audio:", err));
-    audio.onended = () => setSonnieImage("idle");
-
-  } catch (err) {
-    console.error("Errore nella sintesi vocale:", err);
-    setSonnieImage("idle");
-  }
-}
-
 
 window.unlockChat = function () {
   const code = document.getElementById("access-code").value.trim();
@@ -180,9 +108,6 @@ function startVoice() {
   const micHint = document.getElementById("mic-hint");
   micHint.textContent = "🎙️ Sto ascoltando...";
 
-  // ✅ Cambia immagine SUBITO appena premi il pulsante
-  setSonnieImage("speaking");
-
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SpeechRecognition) {
     micHint.textContent = "❌ Il riconoscimento vocale non è supportato su questo dispositivo.";
@@ -197,14 +122,14 @@ function startVoice() {
 
   recognition.onresult = function (event) {
     const transcript = event.results[0][0].transcript;
-    document.getElementById("prompt").value = transcript;
-    document.getElementById("chat-form").dispatchEvent(new Event("submit"));
+    micHint.textContent = "🧠 Elaborazione...";
+
+    handleUserMessage(transcript);
   };
 
   recognition.onerror = function (event) {
     micHint.textContent = "❌ Errore nell'ascolto: " + event.error;
     console.warn("SpeechRecognition error:", event.error);
-    setSonnieImage("idle"); // fallback
   };
 
   recognition.onend = function () {
@@ -218,3 +143,69 @@ function startVoice() {
   }
 }
 
+async function handleUserMessage(text) {
+  if (!accessGranted || !text) return;
+
+  const box = document.getElementById("chat-box");
+  conversation.push({ role: "user", content: text });
+
+  const userDiv = document.createElement("div");
+  userDiv.textContent = "> " + text;
+  box.appendChild(userDiv);
+  box.scrollTop = box.scrollHeight;
+
+  setSonnieImage("thinking");
+
+  try {
+    const res = await fetch("https://59dd1aea-569d-4810-bc96-527af4969cc4-00-36bmgfvj5e4u2.janeway.replit.dev/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ messages: conversation })
+    });
+
+    const data = await res.json();
+    const reply = data.response || "[No reply]";
+    conversation.push({ role: "assistant", content: reply });
+
+    const botDiv = document.createElement("div");
+    botDiv.textContent = reply;
+    box.appendChild(botDiv);
+    box.scrollTop = box.scrollHeight;
+
+    await speak(reply);
+  } catch (err) {
+    const errorDiv = document.createElement("div");
+    errorDiv.textContent = "[Errore nella risposta di Sonnie]";
+    box.appendChild(errorDiv);
+    box.scrollTop = box.scrollHeight;
+    setSonnieImage("idle");
+  }
+}
+
+async function speak(text) {
+  if (!voiceEnabled || !text) return;
+
+  setSonnieImage("speaking");
+
+  // forza aggiornamento del DOM prima di iniziare il fetch
+  await new Promise(r => setTimeout(r, 50));
+
+  try {
+    const res = await fetch("https://59dd1aea-569d-4810-bc96-527af4969cc4-00-36bmgfvj5e4u2.janeway.replit.dev/speak", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text })
+    });
+
+    const blob = await res.blob();
+    if (audio) audio.pause();
+    audio = new Audio(URL.createObjectURL(blob));
+
+    audio.oncanplaythrough = () => audio.play().catch(err => console.warn("Errore audio:", err));
+    audio.onended = () => setSonnieImage("idle");
+
+  } catch (err) {
+    console.error("Errore nella sintesi vocale:", err);
+    setSonnieImage("idle");
+  }
+}
