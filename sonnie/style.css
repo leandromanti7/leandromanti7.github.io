@@ -81,19 +81,22 @@ button {
 #voice-toggle-btn {
   position: absolute;
   top: 10px;
-  right: 160px;
+  right: 140px;  /* o dove preferisci */
   background: #222;
   color: #ffcc00;
   border: 1px solid #555;
-  padding: 8px 12px;
+  padding: 6px 10px;
   font-size: 0.85em;
   cursor: pointer;
   z-index: 999;
-  max-width: 140px;     /* ✅ limita la larghezza massima */
-  white-space: nowrap;  /* ✅ impedisce il ritorno a capo del testo */
-  overflow: hidden;     /* ✅ (opzionale) nasconde testo se eccede */
-  text-overflow: ellipsis; /* ✅ (opzionale) mostra "..." se il testo è troppo lungo */
+  max-width: 130px;
+  width: auto;           /* ✅ forza larghezza solo quanto serve */
+  white-space: nowrap;   /* ✅ impedisce il ritorno a capo */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block; /* ✅ evita che si espanda come blocco */
 }
+
 
 
 @keyframes pulse {
