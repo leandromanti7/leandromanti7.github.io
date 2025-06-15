@@ -12,92 +12,10 @@
 
   <title>Sonnie Terminal</title>
   <link rel="stylesheet" href="style.css"/>
-  <style>
-    #sonnie-visual {
-      max-width: 200px;
-      margin: 20px auto 0 auto;
-      display: none;
-      transition: opacity 0.3s;
-    }
-    #sonnie-visual.visible {
-      display: block;
-      opacity: 1;
-    }
-  </style>
-
-<style>
-  #chat-interface {
-    display: flex;
-    gap: 20px;
-    align-items: flex-start;
-    margin-top: 20px;
-    flex-wrap: wrap;
-  }
-
-  #sonnie-visual {
-    max-width: 240px;
-    height: auto;
-    border-radius: 12px;
-    box-shadow: 0 0 10px #00ffcc44;
-  }
-
-  .chat-panel {
-    flex: 1;
-    min-width: 280px;
-  }
-
-  #chat-box {
-    max-height: 400px;
-    overflow-y: auto;
-    background: #222;
-    padding: 10px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-  }
-
-  #chat-form textarea {
-    width: 100%;
-    resize: vertical;
-    padding: 8px;
-    border-radius: 6px;
-    margin-bottom: 8px;
-    border: none;
-    font-size: 1em;
-  }
-
-  #chat-form button {
-    margin-right: 8px;
-    padding: 8px 14px;
-    border-radius: 6px;
-    border: none;
-    background-color: #00cc66;
-    color: white;
-    cursor: pointer;
-    font-size: 1em;
-  }
-
-  #chat-form button:hover {
-    background-color: #00994d;
-  }
-
-  @media (max-width: 768px) {
-    #chat-interface {
-      flex-direction: column;
-      align-items: center;
-    }
-
-    #sonnie-visual {
-      max-width: 80%;
-    }
-  }
-</style>
-
 </head>
 <body>
   <div class="terminal">
     <h1>Sonnie Terminal</h1>
-
-    <img id="sonnie-visual" src="img/sonnie_home_1.png" alt="Sonnie Visual" />
 
     <!-- Sezione login -->
     <div id="login-section">
@@ -106,23 +24,22 @@
       <p id="login-error" style="color:red; display:none;">Wrong key. Try again.</p>
     </div>
 
-    <!-- Sezione chat nascosta finché non si sblocca -->
+    <!-- Sezione chat + immagine Sonnie -->
     <div id="chat-section" style="display:none;">
-<div id="chat-interface">
-  <img id="sonnie-visual" src="../assets/sonnie_home_1.png" alt="Sonnie Image">
-  <div class="chat-panel">
-    <div id="chat-box"></div>
-    <form id="chat-form">
-      <textarea id="prompt" placeholder="Ask Sonnie…" required></textarea>
-      <button type="submit">Send</button>
-      <button type="button" id="speakBtn">🎤 Speak</button>
-    </form>
-  </div>
-</div>
-</div>
+      <div id="chat-interface">
+        <img id="sonnie-visual" src="img/sonnie_home_1.png" alt="Sonnie Image">
+        <div class="chat-panel">
+          <div id="chat-box"></div>
+          <form id="chat-form">
+            <textarea id="prompt" placeholder="Ask Sonnie…" required></textarea>
+            <button type="submit">Send</button>
+            <button type="button" id="speakBtn">🎤 Speak</button>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script src="script.js" defer></script>
 </body>
 </html>
-
