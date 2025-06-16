@@ -46,47 +46,48 @@
   <button onclick="captureAndSend()">Scatta e descrivi</button>
   <p id="response">...</p>
 
-  <script>
-    const video = document.getElementById('camera');
-    const canvas = document.getElementById('snapshot');
-    const responseBox = document.getElementById('response');
+ <script>
+  const video = document.getElementById('camera');
+  const canvas = document.getElementById('snapshot');
+  const responseBox = document.getElementById('response');
 
-    navigator.mediaDevices.getUserMedia({ video: true })
-      .then(stream => {
-        video.srcObject = stream;
-      })
-      .catch(err => {
-        responseBox.textContent = "Impossibile accedere alla fotocamera.";
-        console.error("Errore fotocamera:", err);
+  navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => {
+      video.srcObject = stream;
+    })
+    .catch(err => {
+      responseBox.textContent = "Impossibile accedere alla fotocamera.";
+      console.error("Errore fotocamera:", err);
+    });
+
+  async function captureAndSend() {
+    const context = canvas.getContext('2d');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    context.drawImage(video, 0, 0);
+    const imageData = canvas.toDataURL('image/jpeg');
+
+    responseBox.textContent = "Analisi in corso...";
+
+    try {
+      const res = await fetch('https://sonnie-backend-mantileandro.replit.app/analyze-image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: imageData })
       });
 
-    async function captureAndSend() {
-      const context = canvas.getContext('2d');
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      context.drawImage(video, 0, 0);
-      const imageData = canvas.toDataURL('image/jpeg');
+      if (!res.ok) {
+        throw new Error(`Errore HTTP ${res.status}`);
+      }
 
-      responseBox.textContent = "Analisi in corso...";
-
-        try {
-  const res = await fetch('https://sonnie-backend-mantileandro.replit.app/analyze-image', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ image: imageData })
-  });
-
-  if (!res.ok) {
-    throw new Error(`Errore HTTP ${res.status}`);
+      const data = await res.json();
+      responseBox.textContent = data.description || 'Nessuna descrizione disponibile.';
+    } catch (err) {
+      console.error("Errore fetch analyze-image:", err);
+      responseBox.textContent = "Errore durante l'analisi. Controlla la connessione o riprova.";
+    }
   }
+</script>
 
-  const data = await res.json();
-  responseBox.textContent = data.description || 'Nessuna descrizione disponibile.';
-} catch (err) {
-  console.error("Errore fetch analyze-image:", err);
-  responseBox.textContent = "Errore durante l'analisi. Controlla la connessione o riprova.";
-}
-
-  </script>
 </body>
 </html>
