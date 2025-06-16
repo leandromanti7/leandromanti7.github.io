@@ -69,7 +69,8 @@
 
       responseBox.textContent = "Analisi in corso...";
 
-      const res = await fetch('/analyze-image', {
+        const res = await fetch('https://sonnie-backend-mantileandro.replit.app/analyze-image', {
+
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ image: imageData })
