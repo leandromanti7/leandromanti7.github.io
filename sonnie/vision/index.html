@@ -69,16 +69,24 @@
 
       responseBox.textContent = "Analisi in corso...";
 
-        const res = await fetch('https://sonnie-backend-mantileandro.replit.app/analyze-image', {
+        try {
+  const res = await fetch('https://sonnie-backend-mantileandro.replit.app/analyze-image', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ image: imageData })
+  });
 
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ image: imageData })
-      });
+  if (!res.ok) {
+    throw new Error(`Errore HTTP ${res.status}`);
+  }
 
-      const data = await res.json();
-      responseBox.textContent = data.description || 'Nessuna descrizione disponibile.';
-    }
+  const data = await res.json();
+  responseBox.textContent = data.description || 'Nessuna descrizione disponibile.';
+} catch (err) {
+  console.error("Errore fetch analyze-image:", err);
+  responseBox.textContent = "Errore durante l'analisi. Controlla la connessione o riprova.";
+}
+
   </script>
 </body>
 </html>
