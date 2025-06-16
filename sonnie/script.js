@@ -156,7 +156,7 @@ async function handleUserMessage(text) {
   box.scrollTop = box.scrollHeight;
 
   try {
-    const res = await fetch("https://59dd1aea-569d-4810-bc96-527af4969cc4-00-36bmgfvj5e4u2.janeway.replit.dev/chat", {
+    const res = await fetch("https://sonnie-backend-mantileandro.replit.app/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ messages: conversation })
@@ -193,7 +193,7 @@ async function speak(text) {
   const lang = isEnglish ? "en-US" : "it-IT";
 
   try {
-    const res = await fetch("https://59dd1aea-569d-4810-bc96-527af4969cc4-00-36bmgfvj5e4u2.janeway.replit.dev/speak", {
+    const res = await fetch("https://sonnie-backend-mantileandro.replit.app/speak", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text, lang }) // 👈 Passiamo anche la lingua
