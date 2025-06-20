@@ -11,16 +11,31 @@ const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.xr.enabled = true;
 document.body.appendChild(renderer.domElement);
-document.body.appendChild(VRButton.createButton(renderer));
 
+document.body.appendChild(VRButton.createButton(renderer, {
+  requiredFeatures: ['hand-tracking']
+}));
+
+// Cubo semplice al centro
 const geometry = new THREE.BoxGeometry(1, 1, 1);
 const material = new THREE.MeshStandardMaterial({ color: 0x00ffcc });
 const cube = new THREE.Mesh(geometry, material);
 scene.add(cube);
 
+// Luce ambiente
 const light = new THREE.HemisphereLight(0xffffff, 0x444444);
 scene.add(light);
 
+// ➕ Inizializzazione mani (senza modelli)
+function setupHands() {
+  for (let i = 0; i <= 1; i++) {
+    const hand = renderer.xr.getHand(i);
+    scene.add(hand);
+  }
+}
+setupHands();
+
+// Animazione
 renderer.setAnimationLoop(() => {
   cube.rotation.x += 0.01;
   cube.rotation.y += 0.01;
