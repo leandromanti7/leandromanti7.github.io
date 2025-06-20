@@ -1,6 +1,6 @@
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.162.0/build/three.module.js';
-import { VRButton } from 'https://cdn.jsdelivr.net/npm/three@0.162.0/examples/jsm/webxr/VRButton.js';
-import { XRHandModelFactory } from 'https://cdn.jsdelivr.net/npm/three@0.162.0/examples/jsm/webxr/XRHandModelFactory.js';
+import * as THREE from 'https://unpkg.com/three@0.162.0/build/three.module.js';
+import { VRButton } from 'https://unpkg.com/three@0.162.0/examples/jsm/webxr/VRButton.js';
+import { XRHandModelFactory } from 'https://unpkg.com/three@0.162.0/examples/jsm/webxr/XRHandModelFactory.js';
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x202020);
