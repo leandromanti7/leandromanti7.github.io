@@ -54,23 +54,24 @@ const base = new THREE.Mesh(
 base.position.y = 1.15;
 torso.add(base);
 
-// ➕ Braccia dinamiche (spalla fissa, cilindro che si estende verso il controller)
-function createDynamicArm(color, shoulderPosition) {
-  const arm = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.025, 0.025, 1, 12, 1, true),
+// Braccia articolate a due segmenti (braccio + avambraccio)
+function createArmSegment(color) {
+  return new THREE.Mesh(
+    new THREE.CylinderGeometry(0.025, 0.025, 1, 12),
     new THREE.MeshStandardMaterial({ color })
   );
-  arm.geometry.translate(0, -0.5, 0); // per ruotare da spalla a controller
-  arm.position.copy(shoulderPosition);
-  scene.add(arm);
-  return arm;
 }
 
 const leftShoulder = new THREE.Vector3(-0.2, 1.6, -0.5);
 const rightShoulder = new THREE.Vector3(0.2, 1.6, -0.5);
 
-const dynamicArmLeft = createDynamicArm(0xff4444, leftShoulder);
-const dynamicArmRight = createDynamicArm(0x44ff44, rightShoulder);
+const upperArmLeft = createArmSegment(0xff4444);
+const lowerArmLeft = createArmSegment(0xaa0000);
+scene.add(upperArmLeft, lowerArmLeft);
+
+const upperArmRight = createArmSegment(0x44ff44);
+const lowerArmRight = createArmSegment(0x00aa00);
+scene.add(upperArmRight, lowerArmRight);
 
 const controller1 = renderer.xr.getController(0);
 scene.add(controller1);
@@ -78,21 +79,41 @@ scene.add(controller1);
 const controller2 = renderer.xr.getController(1);
 scene.add(controller2);
 
-// Animazione: aggiorna la lunghezza e orientamento delle braccia
+// Funzione per aggiornare segmenti braccio + avambraccio con lunghezze fisse
+function updateArm(shoulder, controller, upperArm, lowerArm, lengthUpper = 0.25, lengthLower = 0.25) {
+  const handPos = controller.position.clone();
+  const shoulderToHand = handPos.clone().sub(shoulder);
+  const totalDist = shoulderToHand.length();
+
+  // Se troppo distante, normalizza
+  const dir = shoulderToHand.clone().normalize();
+  const elbowDist = Math.min(lengthUpper, totalDist / 2);
+
+  // Stima gomito (elbow) come punto intermedio piegato in direzione ortogonale
+  const up = new THREE.Vector3(0, 1, 0);
+  const elbowOffset = new THREE.Vector3().crossVectors(dir, up).normalize().multiplyScalar(0.1);
+  const elbow = shoulder.clone().addScaledVector(dir, elbowDist).add(elbowOffset);
+
+  // ➤ Upper arm
+  const upperVec = elbow.clone().sub(shoulder);
+  const upperMid = shoulder.clone().addScaledVector(upperVec, 0.5);
+  upperArm.position.copy(upperMid);
+  upperArm.scale.y = upperVec.length();
+  upperArm.lookAt(elbow);
+  upperArm.rotateX(Math.PI / 2);
+
+  // ➤ Lower arm
+  const lowerVec = handPos.clone().sub(elbow);
+  const lowerMid = elbow.clone().addScaledVector(lowerVec, 0.5);
+  lowerArm.position.copy(lowerMid);
+  lowerArm.scale.y = lowerVec.length();
+  lowerArm.lookAt(handPos);
+  lowerArm.rotateX(Math.PI / 2);
+}
+
+// Loop
 renderer.setAnimationLoop(() => {
-  // Braccio sinistro
-  const dir1 = new THREE.Vector3().subVectors(controller1.position, leftShoulder);
-  dynamicArmLeft.position.copy(leftShoulder.clone().addScaledVector(dir1, 0.5));
-  dynamicArmLeft.scale.y = dir1.length();
-  dynamicArmLeft.lookAt(controller1.position);
-  dynamicArmLeft.rotateX(Math.PI / 2);
-
-  // Braccio destro
-  const dir2 = new THREE.Vector3().subVectors(controller2.position, rightShoulder);
-  dynamicArmRight.position.copy(rightShoulder.clone().addScaledVector(dir2, 0.5));
-  dynamicArmRight.scale.y = dir2.length();
-  dynamicArmRight.lookAt(controller2.position);
-  dynamicArmRight.rotateX(Math.PI / 2);
-
+  updateArm(leftShoulder, controller1, upperArmLeft, lowerArmLeft);
+  updateArm(rightShoulder, controller2, upperArmRight, lowerArmRight);
   renderer.render(scene, camera);
 });
