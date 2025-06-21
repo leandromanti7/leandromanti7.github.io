@@ -81,32 +81,32 @@ scene.add(controller1);
 const controller2 = renderer.xr.getController(1);
 scene.add(controller2);
 
-// Funzione per aggiornare segmenti braccio + avambraccio con lunghezze fisse
+// Funzione aggiornata: braccia con lunghezza fissa e giunti connessi
 function updateArm(shoulder, controller, upperArm, lowerArm, lengthUpper, lengthLower) {
   const handPos = controller.position.clone();
   const shoulderToHand = handPos.clone().sub(shoulder);
+  const distance = shoulderToHand.length();
   const totalLength = lengthUpper + lengthLower;
 
-  // Se la mano è troppo vicina o troppo lontana, correggila alla distanza fissa
-  const correctedHand = shoulder.clone().add(shoulderToHand.clone().normalize().multiplyScalar(totalLength));
+  // ➤ Clamping alla distanza massima
+  const clampedDir = shoulderToHand.clone().normalize().multiplyScalar(Math.min(distance, totalLength));
+  const correctedHand = shoulder.clone().add(clampedDir);
 
-  // Stima gomito piegato
-  const dir = correctedHand.clone().sub(shoulder).normalize();
-  const elbowDir = new THREE.Vector3().crossVectors(dir, new THREE.Vector3(0, 1, 0)).normalize();
-  const elbowOffset = elbowDir.multiplyScalar(0.1);
-  const elbow = shoulder.clone().addScaledVector(dir, lengthUpper).add(elbowOffset);
+  // ➤ Gomito sollevato (triangolo isoscele piegato)
+  const mid = shoulder.clone().add(correctedHand).multiplyScalar(0.5);
+  const bendAxis = new THREE.Vector3().crossVectors(shoulderToHand, new THREE.Vector3(0, 1, 0)).normalize();
+  const bendAmount = Math.sqrt(Math.max(lengthUpper * lengthUpper - Math.pow(distance / 2, 2), 0));
+  const elbow = mid.clone().add(bendAxis.multiplyScalar(bendAmount));
 
-  // ➤ Upper arm
+  // ➤ Upper Arm
   const upperVec = elbow.clone().sub(shoulder);
-  const upperMid = shoulder.clone().addScaledVector(upperVec, 0.5);
-  upperArm.position.copy(upperMid);
+  upperArm.position.copy(shoulder.clone().addScaledVector(upperVec, 0.5));
   upperArm.lookAt(elbow);
   upperArm.rotateX(Math.PI / 2);
 
-  // ➤ Lower arm
+  // ➤ Lower Arm
   const lowerVec = correctedHand.clone().sub(elbow);
-  const lowerMid = elbow.clone().addScaledVector(lowerVec, 0.5);
-  lowerArm.position.copy(lowerMid);
+  lowerArm.position.copy(elbow.clone().addScaledVector(lowerVec, 0.5));
   lowerArm.lookAt(correctedHand);
   lowerArm.rotateX(Math.PI / 2);
 }
