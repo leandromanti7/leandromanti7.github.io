@@ -35,7 +35,7 @@ function setupHands() {
     const hand = renderer.xr.getHand(i);
     scene.add(hand);
 
-    const handModel = handModelFactory.createHandModel(hand, "mesh");
+    const handModel = handModelFactory.createHandModel(hand, "boxes");
     hand.add(handModel);
   }
 }
