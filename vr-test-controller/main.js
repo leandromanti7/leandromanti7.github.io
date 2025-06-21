@@ -25,7 +25,28 @@ const floor = new THREE.Mesh(
 floor.rotation.x = -Math.PI / 2;
 scene.add(floor);
 
-// Funzione per creare un braccio robotico stilizzato
+// 👤 Corpo centrale robotico (busto + testa)
+const torso = new THREE.Group();
+
+// Torace (cilindro verticale)
+const chest = new THREE.Mesh(
+  new THREE.CylinderGeometry(0.15, 0.15, 0.4, 16),
+  new THREE.MeshStandardMaterial({ color: 0x8888ff })
+);
+chest.position.y = 1.4;
+torso.add(chest);
+
+// Testa (sfera sopra il busto)
+const head = new THREE.Mesh(
+  new THREE.SphereGeometry(0.1, 16, 16),
+  new THREE.MeshStandardMaterial({ color: 0xffffcc })
+);
+head.position.y = 1.65;
+torso.add(head);
+
+scene.add(torso);
+
+// ➕ Braccio robotico stilizzato
 function createRobotArm(color = 0x00ffcc) {
   const group = new THREE.Group();
 
@@ -57,7 +78,15 @@ const arm2 = createRobotArm(0x44ff44);
 controller2.add(arm2);
 scene.add(controller2);
 
-// Animazione
+// ➕ (opzionale) base fissa sotto al robot
+const base = new THREE.Mesh(
+  new THREE.CylinderGeometry(0.2, 0.2, 0.05, 20),
+  new THREE.MeshStandardMaterial({ color: 0x555555 })
+);
+base.position.y = 1.15;
+torso.add(base);
+
+// Animazione continua
 renderer.setAnimationLoop(() => {
   renderer.render(scene, camera);
 });
