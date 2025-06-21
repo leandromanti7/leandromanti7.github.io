@@ -33,7 +33,7 @@ const chest = new THREE.Mesh(
   new THREE.CylinderGeometry(0.15, 0.15, 0.4, 16),
   new THREE.MeshStandardMaterial({ color: 0x8888ff })
 );
-chest.position.y = 1.4;
+chest.position.y = 1.6; // ← altezza del torace
 torso.add(chest);
 
 // Testa (sfera sopra il busto)
@@ -41,10 +41,13 @@ const head = new THREE.Mesh(
   new THREE.SphereGeometry(0.1, 16, 16),
   new THREE.MeshStandardMaterial({ color: 0xffffcc })
 );
-head.position.y = 1.65;
+head.position.y = 1.9; // ← altezza della testa
 torso.add(head);
 
+// Posizionamento generale del corpo
+torso.position.z = -0.5; // avvicina il robot a te
 scene.add(torso);
+
 
 // ➕ Braccio robotico stilizzato
 function createRobotArm(color = 0x00ffcc) {
