@@ -25,63 +25,26 @@ const floor = new THREE.Mesh(
 floor.rotation.x = -Math.PI / 2;
 scene.add(floor);
 
-// 👤 Corpo centrale robotico (busto + testa)
+// Corpo centrale robotico
 const torso = new THREE.Group();
 
-// Torace (cilindro verticale)
+// Torace
 const chest = new THREE.Mesh(
   new THREE.CylinderGeometry(0.15, 0.15, 0.4, 16),
   new THREE.MeshStandardMaterial({ color: 0x8888ff })
 );
-chest.position.y = 1.6; // ← altezza del torace
+chest.position.y = 1.6;
 torso.add(chest);
 
-// Testa (sfera sopra il busto)
+// Testa
 const head = new THREE.Mesh(
   new THREE.SphereGeometry(0.1, 16, 16),
   new THREE.MeshStandardMaterial({ color: 0xffffcc })
 );
-head.position.y = 1.9; // ← altezza della testa
+head.position.y = 1.9;
 torso.add(head);
 
-// Posizionamento generale del corpo
-torso.position.z = -0.5; // avvicina il robot a te
-scene.add(torso);
-
-
-// ➕ Braccio robotico stilizzato
-function createRobotArm(color = 0x00ffcc) {
-  const group = new THREE.Group();
-
-  const shoulder = new THREE.Mesh(
-    new THREE.SphereGeometry(0.07, 16, 16),
-    new THREE.MeshStandardMaterial({ color })
-  );
-  group.add(shoulder);
-
-  const forearm = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.03, 0.03, 0.25, 12),
-    new THREE.MeshStandardMaterial({ color })
-  );
-  forearm.position.y = -0.15;
-  group.add(forearm);
-
-  return group;
-}
-
-// Controller sinistro → braccio rosso
-const controller1 = renderer.xr.getController(0);
-const arm1 = createRobotArm(0xff4444);
-controller1.add(arm1);
-scene.add(controller1);
-
-// Controller destro → braccio verde
-const controller2 = renderer.xr.getController(1);
-const arm2 = createRobotArm(0x44ff44);
-controller2.add(arm2);
-scene.add(controller2);
-
-// ➕ (opzionale) base fissa sotto al robot
+// Base
 const base = new THREE.Mesh(
   new THREE.CylinderGeometry(0.2, 0.2, 0.05, 20),
   new THREE.MeshStandardMaterial({ color: 0x555555 })
@@ -89,7 +52,59 @@ const base = new THREE.Mesh(
 base.position.y = 1.15;
 torso.add(base);
 
-// Animazione continua
+torso.position.z = -0.5;
+scene.add(torso);
+
+// ➕ Spalle fisse
+const leftShoulder = new THREE.Object3D();
+leftShoulder.position.set(-0.2, 1.6, -0.5);
+scene.add(leftShoulder);
+
+const rightShoulder = new THREE.Object3D();
+rightShoulder.position.set(0.2, 1.6, -0.5);
+scene.add(rightShoulder);
+
+// ➕ Controller
+const controller1 = renderer.xr.getController(0);
+scene.add(controller1);
+
+const controller2 = renderer.xr.getController(1);
+scene.add(controller2);
+
+// ➕ Bracci dinamici (cubi)
+const dynamicArm1 = new THREE.Mesh(
+  new THREE.CylinderGeometry(0.025, 0.025, 1, 8, 1, true),
+  new THREE.MeshStandardMaterial({ color: 0xff4444 })
+);
+scene.add(dynamicArm1);
+
+const dynamicArm2 = new THREE.Mesh(
+  new THREE.CylinderGeometry(0.025, 0.025, 1, 8, 1, true),
+  new THREE.MeshStandardMaterial({ color: 0x44ff44 })
+);
+scene.add(dynamicArm2);
+
+// 🔁 Loop
 renderer.setAnimationLoop(() => {
+  const p1 = leftShoulder.getWorldPosition(new THREE.Vector3());
+  const p2 = controller1.getWorldPosition(new THREE.Vector3());
+  updateCylinder(dynamicArm1, p1, p2);
+
+  const p3 = rightShoulder.getWorldPosition(new THREE.Vector3());
+  const p4 = controller2.getWorldPosition(new THREE.Vector3());
+  updateCylinder(dynamicArm2, p3, p4);
+
   renderer.render(scene, camera);
 });
+
+// Funzione per aggiornare cilindro tra 2 punti
+function updateCylinder(cylinder, start, end) {
+  const mid = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5);
+  const dir = new THREE.Vector3().subVectors(end, start);
+  const length = dir.length();
+
+  cylinder.position.copy(mid);
+  cylinder.scale.set(1, length / 2, 1);
+  cylinder.lookAt(end);
+  cylinder.rotation.z += Math.PI / 2;
+}
