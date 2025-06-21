@@ -55,22 +55,24 @@ base.position.y = 1.15;
 torso.add(base);
 
 // Braccia articolate a due segmenti (braccio + avambraccio)
-function createArmSegment(color) {
-  return new THREE.Mesh(
-    new THREE.CylinderGeometry(0.025, 0.025, 1, 12),
-    new THREE.MeshStandardMaterial({ color })
-  );
+function createArmSegment(color, length = 0.25) {
+  const geometry = new THREE.CylinderGeometry(0.025, 0.025, length, 12);
+  geometry.translate(0, -length / 2, 0);
+  return new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({ color }));
 }
 
 const leftShoulder = new THREE.Vector3(-0.2, 1.6, -0.5);
 const rightShoulder = new THREE.Vector3(0.2, 1.6, -0.5);
 
-const upperArmLeft = createArmSegment(0xff4444);
-const lowerArmLeft = createArmSegment(0xaa0000);
+const lengthUpper = 0.25;
+const lengthLower = 0.25;
+
+const upperArmLeft = createArmSegment(0xff4444, lengthUpper);
+const lowerArmLeft = createArmSegment(0xaa0000, lengthLower);
 scene.add(upperArmLeft, lowerArmLeft);
 
-const upperArmRight = createArmSegment(0x44ff44);
-const lowerArmRight = createArmSegment(0x00aa00);
+const upperArmRight = createArmSegment(0x44ff44, lengthUpper);
+const lowerArmRight = createArmSegment(0x00aa00, lengthLower);
 scene.add(upperArmRight, lowerArmRight);
 
 const controller1 = renderer.xr.getController(0);
@@ -80,40 +82,38 @@ const controller2 = renderer.xr.getController(1);
 scene.add(controller2);
 
 // Funzione per aggiornare segmenti braccio + avambraccio con lunghezze fisse
-function updateArm(shoulder, controller, upperArm, lowerArm, lengthUpper = 0.25, lengthLower = 0.25) {
+function updateArm(shoulder, controller, upperArm, lowerArm, lengthUpper, lengthLower) {
   const handPos = controller.position.clone();
   const shoulderToHand = handPos.clone().sub(shoulder);
-  const totalDist = shoulderToHand.length();
+  const totalLength = lengthUpper + lengthLower;
 
-  // Se troppo distante, normalizza
-  const dir = shoulderToHand.clone().normalize();
-  const elbowDist = Math.min(lengthUpper, totalDist / 2);
+  // Se la mano è troppo vicina o troppo lontana, correggila alla distanza fissa
+  const correctedHand = shoulder.clone().add(shoulderToHand.clone().normalize().multiplyScalar(totalLength));
 
-  // Stima gomito (elbow) come punto intermedio piegato in direzione ortogonale
-  const up = new THREE.Vector3(0, 1, 0);
-  const elbowOffset = new THREE.Vector3().crossVectors(dir, up).normalize().multiplyScalar(0.1);
-  const elbow = shoulder.clone().addScaledVector(dir, elbowDist).add(elbowOffset);
+  // Stima gomito piegato
+  const dir = correctedHand.clone().sub(shoulder).normalize();
+  const elbowDir = new THREE.Vector3().crossVectors(dir, new THREE.Vector3(0, 1, 0)).normalize();
+  const elbowOffset = elbowDir.multiplyScalar(0.1);
+  const elbow = shoulder.clone().addScaledVector(dir, lengthUpper).add(elbowOffset);
 
   // ➤ Upper arm
   const upperVec = elbow.clone().sub(shoulder);
   const upperMid = shoulder.clone().addScaledVector(upperVec, 0.5);
   upperArm.position.copy(upperMid);
-  upperArm.scale.y = upperVec.length();
   upperArm.lookAt(elbow);
   upperArm.rotateX(Math.PI / 2);
 
   // ➤ Lower arm
-  const lowerVec = handPos.clone().sub(elbow);
+  const lowerVec = correctedHand.clone().sub(elbow);
   const lowerMid = elbow.clone().addScaledVector(lowerVec, 0.5);
   lowerArm.position.copy(lowerMid);
-  lowerArm.scale.y = lowerVec.length();
-  lowerArm.lookAt(handPos);
+  lowerArm.lookAt(correctedHand);
   lowerArm.rotateX(Math.PI / 2);
 }
 
 // Loop
 renderer.setAnimationLoop(() => {
-  updateArm(leftShoulder, controller1, upperArmLeft, lowerArmLeft);
-  updateArm(rightShoulder, controller2, upperArmRight, lowerArmRight);
+  updateArm(leftShoulder, controller1, upperArmLeft, lowerArmLeft, lengthUpper, lengthLower);
+  updateArm(rightShoulder, controller2, upperArmRight, lowerArmRight, lengthUpper, lengthLower);
   renderer.render(scene, camera);
 });
