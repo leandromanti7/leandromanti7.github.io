@@ -40,7 +40,7 @@ const head = new THREE.Mesh(
   new THREE.SphereGeometry(0.1, 16, 16),
   new THREE.MeshStandardMaterial({ color: 0xffffcc })
 );
-head.position.set(0, 1.9, 0); // Altezza corretta
+head.position.y = 1.9;
 torso.add(head);
 
 torso.position.z = -0.5;
@@ -54,79 +54,83 @@ const base = new THREE.Mesh(
 base.position.y = 1.15;
 torso.add(base);
 
-// Funzione per creare un cilindro segmentato
-function createArmSegment(color, length = 0.25) {
+// Parametri braccia
+const lengthUpper = 0.25;
+const lengthLower = 0.25;
+
+function createArmSegment(color, length) {
   const geometry = new THREE.CylinderGeometry(0.025, 0.025, length, 12);
   geometry.translate(0, -length / 2, 0);
   return new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({ color }));
 }
 
+function createJointSphere(color = 0xffffff, radius = 0.03) {
+  return new THREE.Mesh(
+    new THREE.SphereGeometry(radius, 16, 16),
+    new THREE.MeshStandardMaterial({ color })
+  );
+}
+
 // Spalle
-const shoulderLeft = new THREE.Mesh(
-  new THREE.SphereGeometry(0.035, 12, 12),
-  new THREE.MeshStandardMaterial({ color: 0xcccccc })
-);
-shoulderLeft.position.set(-0.2, 1.75, -0.5);
-scene.add(shoulderLeft);
+const leftShoulder = new THREE.Vector3(-0.2, 1.8, -0.5);
+const rightShoulder = new THREE.Vector3(0.2, 1.8, -0.5);
 
-const shoulderRight = shoulderLeft.clone();
-shoulderRight.position.x = 0.2;
-scene.add(shoulderRight);
-
-// Bracci + avambracci + mani
-const lengthUpper = 0.25;
-const lengthLower = 0.25;
-
+// Braccio sinistro
 const upperArmLeft = createArmSegment(0xff4444, lengthUpper);
+const elbowLeft = createJointSphere();
 const lowerArmLeft = createArmSegment(0xaa0000, lengthLower);
-const handLeft = new THREE.Mesh(
-  new THREE.SphereGeometry(0.04, 12, 12),
-  new THREE.MeshStandardMaterial({ color: 0xffffff })
-);
-scene.add(upperArmLeft, lowerArmLeft, handLeft);
+const handLeft = createJointSphere();
+scene.add(upperArmLeft, elbowLeft, lowerArmLeft, handLeft);
 
+// Braccio destro
 const upperArmRight = createArmSegment(0x44ff44, lengthUpper);
+const elbowRight = createJointSphere();
 const lowerArmRight = createArmSegment(0x00aa00, lengthLower);
-const handRight = handLeft.clone();
-scene.add(upperArmRight, lowerArmRight, handRight);
+const handRight = createJointSphere();
+scene.add(upperArmRight, elbowRight, lowerArmRight, handRight);
 
 const controller1 = renderer.xr.getController(0);
-scene.add(controller1);
-
 const controller2 = renderer.xr.getController(1);
-scene.add(controller2);
+scene.add(controller1, controller2);
 
-// Funzione di aggiornamento braccio articolato
-function updateArm(shoulder, controller, upperArm, lowerArm, hand, lengthUpper, lengthLower) {
+function updateArm(shoulder, controller, upperArm, elbow, lowerArm, hand, lengthUpper, lengthLower) {
   const handPos = controller.position.clone();
   const shoulderToHand = handPos.clone().sub(shoulder);
   const totalLength = lengthUpper + lengthLower;
-
   const correctedHand = shoulder.clone().add(shoulderToHand.clone().normalize().multiplyScalar(totalLength));
+
+  // Calcolo del gomito realistico
   const dir = correctedHand.clone().sub(shoulder).normalize();
+  const up = new THREE.Vector3(0, 1, 0);
+  const elbowOffsetDir = new THREE.Vector3().crossVectors(dir, up).normalize();
+  const elbowOffset = elbowOffsetDir.multiplyScalar(0.1);
+  const elbowPos = shoulder.clone().addScaledVector(dir, lengthUpper).add(elbowOffset);
 
-  const elbowOffset = new THREE.Vector3().crossVectors(dir, new THREE.Vector3(0, 1, 0)).normalize().multiplyScalar(0.1);
-  const elbow = shoulder.clone().addScaledVector(dir, lengthUpper).add(elbowOffset);
-
-  const upperMid = shoulder.clone().add(elbow).multiplyScalar(0.5);
+  // Upper arm
+  const upperVec = elbowPos.clone().sub(shoulder);
+  const upperMid = shoulder.clone().addScaledVector(upperVec, 0.5);
   upperArm.position.copy(upperMid);
-  upperArm.lookAt(elbow);
+  upperArm.lookAt(elbowPos);
   upperArm.rotateX(Math.PI / 2);
 
-  const lowerMid = elbow.clone().add(correctedHand).multiplyScalar(0.5);
+  // Lower arm
+  const lowerVec = correctedHand.clone().sub(elbowPos);
+  const lowerMid = elbowPos.clone().addScaledVector(lowerVec, 0.5);
   lowerArm.position.copy(lowerMid);
   lowerArm.lookAt(correctedHand);
   lowerArm.rotateX(Math.PI / 2);
 
+  // Giunti
+  elbow.position.copy(elbowPos);
   hand.position.copy(correctedHand);
 }
 
-// Animazione
+// Loop di animazione
 renderer.setAnimationLoop(() => {
-  updateArm(shoulderLeft.position, controller1, upperArmLeft, lowerArmLeft, handLeft, lengthUpper, lengthLower);
-  updateArm(shoulderRight.position, controller2, upperArmRight, lowerArmRight, handRight, lengthUpper, lengthLower);
+  updateArm(leftShoulder, controller1, upperArmLeft, elbowLeft, lowerArmLeft, handLeft, lengthUpper, lengthLower);
+  updateArm(rightShoulder, controller2, upperArmRight, elbowRight, lowerArmRight, handRight, lengthUpper, lengthLower);
 
-  // Ruota la testa in base alla rotazione della camera
+  // La testa segue la rotazione del visore
   head.quaternion.copy(camera.quaternion);
 
   renderer.render(scene, camera);
