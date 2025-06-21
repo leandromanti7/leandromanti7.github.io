@@ -41,8 +41,23 @@ function setupHands() {
 }
 setupHands();
 
-// Loop
+// ➕ Diagnostica: cambia colore sfondo se mani rilevate
 renderer.setAnimationLoop(() => {
+  let handsDetected = 0;
+
+  for (let i = 0; i <= 1; i++) {
+    const hand = renderer.xr.getHand(i);
+    if (hand && hand.joints && Object.keys(hand.joints).length > 0) {
+      handsDetected++;
+    }
+  }
+
+  if (handsDetected > 0) {
+    scene.background.set(0x003300); // verde scuro
+  } else {
+    scene.background.set(0x330000); // rosso scuro
+  }
+
   cube.rotation.x += 0.01;
   cube.rotation.y += 0.01;
   renderer.render(scene, camera);
