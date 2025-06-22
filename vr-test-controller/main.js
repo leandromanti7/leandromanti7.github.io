@@ -190,7 +190,7 @@ function createWorldAxes(length = 0.2) {
   const yArrow = new THREE.ArrowHelper(new THREE.Vector3(-1, 0, 0), new THREE.Vector3(), length, 0x00ff00);
 
   group.add(zArrow, xArrow, yArrow);
-  group.position.set(0, -1.6, 0);
+  group.position.set(0, 0, 0);
   return group;
 }
 
