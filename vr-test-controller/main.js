@@ -176,21 +176,22 @@ scene.add(controller1, controller2);
 function addAxesToController(controller) {
   const axisLength = 0.1;
 
-  // X - ROSSO
-  const xDir = new THREE.Vector3(1, 0, 0);
+  // X - ROSSO → ORA punta verso l'alto (asse Y globale)
+  const xDir = new THREE.Vector3(0, 1, 0);
   const xArrow = new THREE.ArrowHelper(xDir, new THREE.Vector3(0, 0, 0), axisLength, 0xff0000);
   controller.add(xArrow);
 
-  // Y - VERDE
-  const yDir = new THREE.Vector3(0, 1, 0);
+  // Y - VERDE → ORA punta verso sinistra (asse -X globale)
+  const yDir = new THREE.Vector3(-1, 0, 0);
   const yArrow = new THREE.ArrowHelper(yDir, new THREE.Vector3(0, 0, 0), axisLength, 0x00ff00);
   controller.add(yArrow);
 
-  // Z - BLU (verso interno)
-  const zDir = new THREE.Vector3(0, 0, 1); // -Z è in avanti in THREE.js
+  // Z - BLU → resta entrante nella scena (asse -Z globale)
+  const zDir = new THREE.Vector3(0, 0, -1);
   const zArrow = new THREE.ArrowHelper(zDir, new THREE.Vector3(0, 0, 0), axisLength, 0x0000ff);
   controller.add(zArrow);
 }
+
 
 addAxesToController(controller1);
 addAxesToController(controller2);
