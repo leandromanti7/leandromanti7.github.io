@@ -186,8 +186,8 @@ function addAxesToController(controller) {
   const yArrow = new THREE.ArrowHelper(yDir, new THREE.Vector3(0, 0, 0), axisLength, 0x00ff00);
   controller.add(yArrow);
 
-  // Z - BLU (verso avanti)
-  const zDir = new THREE.Vector3(0, 0, -1); // -Z è in avanti in THREE.js
+  // Z - BLU (verso interno)
+  const zDir = new THREE.Vector3(0, 0, 1); // -Z è in avanti in THREE.js
   const zArrow = new THREE.ArrowHelper(zDir, new THREE.Vector3(0, 0, 0), axisLength, 0x0000ff);
   controller.add(zArrow);
 }
