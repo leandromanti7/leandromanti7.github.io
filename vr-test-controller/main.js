@@ -185,14 +185,41 @@ scene.add(userFrame);
 function createWorldAxes(length = 0.2) {
   const group = new THREE.Group();
 
-  const zArrow = new THREE.ArrowHelper(new THREE.Vector3(0, 1, 0), new THREE.Vector3(), length, 0x0000ff);
-  const xArrow = new THREE.ArrowHelper(new THREE.Vector3(0, 0, -1), new THREE.Vector3(), length, 0xff0000);
-  const yArrow = new THREE.ArrowHelper(new THREE.Vector3(-1, 0, 0), new THREE.Vector3(), length, 0x00ff00);
+  const origin = new THREE.Vector3();
+
+  const zArrow = new THREE.ArrowHelper(new THREE.Vector3(0, 1, 0), origin, length, 0x0000ff);
+  const xArrow = new THREE.ArrowHelper(new THREE.Vector3(0, 0, -1), origin, length, 0xff0000);
+  const yArrow = new THREE.ArrowHelper(new THREE.Vector3(-1, 0, 0), origin, length, 0x00ff00);
 
   group.add(zArrow, xArrow, yArrow);
+
+  // Carica il font ed etichetta gli assi
+  const loader = new THREE.FontLoader();
+  loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', font => {
+    const makeLabel = (text, color, position) => {
+      const mat = new THREE.MeshBasicMaterial({ color });
+      const geo = new THREE.TextGeometry(text, {
+        font: font,
+        size: 0.03,
+        height: 0.001
+      });
+      geo.computeBoundingBox();
+      const mesh = new THREE.Mesh(geo, mat);
+      const offsetX = -0.5 * (geo.boundingBox.max.x - geo.boundingBox.min.x);
+      mesh.position.copy(position);
+      mesh.position.x += offsetX;
+      group.add(mesh);
+    };
+
+    makeLabel('X', 0xff0000, new THREE.Vector3(0, 0, -length - 0.02));
+    makeLabel('Y', 0x00ff00, new THREE.Vector3(-length - 0.02, 0, 0));
+    makeLabel('Z', 0x0000ff, new THREE.Vector3(0, length + 0.02, 0));
+  });
+
   group.position.set(0, -1.6, 0);
   return group;
 }
+
 
 function createWorldAxesLabeled(length = 0.2) {
   const group = new THREE.Group();
