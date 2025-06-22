@@ -26,19 +26,17 @@ floor.rotation.x = -Math.PI / 2;
 scene.add(floor);
 
 // === PARAMETRI STRUTTURALI === //
-const torsoWidth = 0.35;      // 35 cm
-const torsoDepth = 0.24;      // 24 cm (non visibile su cilindro)
-const torsoHeight = 0.40;     // 40 cm
+const torsoWidth = 0.35;
+const torsoHeight = 0.40;
 
-const shoulderRadius = 0.05;  // 10 cm diametro
-const armLength = 0.38;       // 38 cm
-const elbowRadius = 0.035;    // 7 cm diametro
-const forearmLength = 0.30;   // 30 cm
-const wristRadius = 0.025;    // 5 cm diametro
+const shoulderRadius = 0.05;
+const armLength = 0.38;
+const elbowRadius = 0.035;
+const forearmLength = 0.30;
+const wristRadius = 0.025;
 
 // === BUSTO === //
 const torso = new THREE.Group();
-
 const chest = new THREE.Mesh(
   new THREE.CylinderGeometry(torsoWidth / 2, torsoWidth / 2, torsoHeight, 16),
   new THREE.MeshStandardMaterial({ color: 0x8888ff })
@@ -46,7 +44,6 @@ const chest = new THREE.Mesh(
 chest.position.y = 1.6;
 torso.add(chest);
 
-// === TESTA === //
 const head = new THREE.Mesh(
   new THREE.SphereGeometry(0.1, 16, 16),
   new THREE.MeshStandardMaterial({ color: 0xffffcc })
@@ -69,10 +66,9 @@ const shoulderRight = shoulderLeft.clone();
 shoulderRight.position.x = torsoWidth / 2;
 scene.add(shoulderRight);
 
-// === UTILITY PER SEGMENTI === //
 function createSegment(length, color) {
   const geo = new THREE.CylinderGeometry(0.025, 0.025, length, 12);
-  geo.translate(0, -length / 2, 0); // per far partire da spalla/gomito
+  geo.translate(0, -length / 2, 0);
   return new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color }));
 }
 function createJoint(radius) {
@@ -82,81 +78,97 @@ function createJoint(radius) {
   );
 }
 
-// === BRACCIO SINISTRO === //
-const upperArmLeft = createSegment(armLength, 0xff4444);
-upperArmLeft.position.copy(shoulderLeft.position);
-scene.add(upperArmLeft);
+// === Braccia con cinematica === //
+const joints = {};
 
-const elbowLeft = createJoint(elbowRadius);
-elbowLeft.position.copy(shoulderLeft.position).add(new THREE.Vector3(0, -armLength, 0));
-scene.add(elbowLeft);
+function createArm(side) {
+  const isLeft = side === 'left';
+  const sign = isLeft ? -1 : 1;
 
-const forearmLeft = createSegment(forearmLength, 0xaa0000);
-forearmLeft.position.copy(elbowLeft.position);
-scene.add(forearmLeft);
+  const shoulder = isLeft ? shoulderLeft.position : shoulderRight.position;
 
-const wristLeft = createJoint(wristRadius);
-wristLeft.position.copy(elbowLeft.position).add(new THREE.Vector3(0, -forearmLength, 0));
-scene.add(wristLeft);
+  const upperArm = createSegment(armLength, isLeft ? 0xff4444 : 0x44ff44);
+  const elbow = createJoint(elbowRadius);
+  const forearm = createSegment(forearmLength, isLeft ? 0xaa0000 : 0x00aa00);
+  const wrist = createJoint(wristRadius);
+  const hand = createPinzaHand();
 
-// === BRACCIO DESTRO === //
-const upperArmRight = createSegment(armLength, 0x44ff44);
-upperArmRight.position.copy(shoulderRight.position);
-scene.add(upperArmRight);
+  scene.add(upperArm, elbow, forearm, wrist, hand);
 
-const elbowRight = createJoint(elbowRadius);
-elbowRight.position.copy(shoulderRight.position).add(new THREE.Vector3(0, -armLength, 0));
-scene.add(elbowRight);
+  joints[side] = {
+    shoulder,
+    upperArm,
+    elbow,
+    forearm,
+    wrist,
+    hand
+  };
+}
 
-const forearmRight = createSegment(forearmLength, 0x00aa00);
-forearmRight.position.copy(elbowRight.position);
-scene.add(forearmRight);
+createArm('left');
+createArm('right');
 
-const wristRight = createJoint(wristRadius);
-wristRight.position.copy(elbowRight.position).add(new THREE.Vector3(0, -forearmLength, 0));
-scene.add(wristRight);
-
-// === MANI A PINZA === //
 function createPinzaHand(color = 0xdddddd) {
   const group = new THREE.Group();
-
-  // Base mano
   const base = new THREE.BoxGeometry(0.05, 0.01, 0.05);
   const baseMesh = new THREE.Mesh(base, new THREE.MeshStandardMaterial({ color }));
   group.add(baseMesh);
-
-  // Dita
   const finger1 = new THREE.Mesh(
     new THREE.BoxGeometry(0.01, 0.04, 0.01),
     new THREE.MeshStandardMaterial({ color: 0xffffff })
   );
   finger1.position.set(-0.015, -0.025, 0);
   group.add(finger1);
-
   const finger2 = finger1.clone();
   finger2.position.x = 0.015;
   group.add(finger2);
-
   return group;
 }
 
-// Mano sinistra
-const handLeft = createPinzaHand();
-handLeft.position.copy(wristLeft.position).add(new THREE.Vector3(0, -0.04, 0)); // sotto al polso
-scene.add(handLeft);
+function updateIKArm(controller, joint) {
+  const { shoulder, upperArm, elbow, forearm, wrist, hand } = joint;
+  const handPos = controller.position.clone();
+  const shoulderToHand = handPos.clone().sub(shoulder);
+  const totalLength = armLength + forearmLength;
+  const correctedHand = shoulder.clone().add(shoulderToHand.clone().normalize().multiplyScalar(totalLength));
 
-// Mano destra
-const handRight = createPinzaHand();
-handRight.position.copy(wristRight.position).add(new THREE.Vector3(0, -0.04, 0));
-scene.add(handRight);
+  const dir = correctedHand.clone().sub(shoulder).normalize();
+  const elbowDir = new THREE.Vector3().crossVectors(dir, new THREE.Vector3(0, 1, 0)).normalize();
+  const elbowOffset = elbowDir.multiplyScalar(0.05);
+  const elbowPos = shoulder.clone().addScaledVector(dir, armLength).add(elbowOffset);
 
+  const upperMid = shoulder.clone().add(elbowPos).multiplyScalar(0.5);
+  upperArm.position.copy(upperMid);
+  upperArm.lookAt(elbowPos);
+  upperArm.rotateX(Math.PI / 2);
 
-// === CONTROLLER XR (non usati ancora) === //
+  const foreMid = elbowPos.clone().add(correctedHand).multiplyScalar(0.5);
+  forearm.position.copy(foreMid);
+  forearm.lookAt(correctedHand);
+  forearm.rotateX(Math.PI / 2);
+
+  elbow.position.copy(elbowPos);
+  wrist.position.copy(correctedHand);
+  hand.position.copy(correctedHand.clone().add(new THREE.Vector3(0, -0.04, 0)));
+}
+
 const controller1 = renderer.xr.getController(0);
 const controller2 = renderer.xr.getController(1);
 scene.add(controller1, controller2);
 
+// Controller model (visibili)
+const controllerModelFactory = new XRControllerModelFactory();
+const controllerGrip1 = renderer.xr.getControllerGrip(0);
+controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
+scene.add(controllerGrip1);
+
+const controllerGrip2 = renderer.xr.getControllerGrip(1);
+controllerGrip2.add(controllerModelFactory.createControllerModel(controllerGrip2));
+scene.add(controllerGrip2);
+
 // === LOOP === //
 renderer.setAnimationLoop(() => {
+  updateIKArm(controller1, joints.left);
+  updateIKArm(controller2, joints.right);
   renderer.render(scene, camera);
 });
