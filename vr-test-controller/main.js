@@ -193,7 +193,7 @@ function createWorldAxes(length = 0.2) {
 
   group.add(zArrow, xArrow, yArrow);
 
-  // Carica il font ed etichetta gli assi
+  // Etichette con font
   const loader = new THREE.FontLoader();
   loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', font => {
     const makeLabel = (text, color, position) => {
@@ -219,6 +219,7 @@ function createWorldAxes(length = 0.2) {
   group.position.set(0, -1.6, 0);
   return group;
 }
+
 
 
 function createWorldAxesLabeled(length = 0.2) {
