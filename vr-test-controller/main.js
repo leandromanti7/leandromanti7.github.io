@@ -173,6 +173,29 @@ const controllerGrip2 = createControllerMesh(0x00ff00);
 controller2.add(controllerGrip2);
 scene.add(controller1, controller2);
 
+function addAxesToController(controller) {
+  const axisLength = 0.1;
+
+  // X - ROSSO
+  const xDir = new THREE.Vector3(1, 0, 0);
+  const xArrow = new THREE.ArrowHelper(xDir, new THREE.Vector3(0, 0, 0), axisLength, 0xff0000);
+  controller.add(xArrow);
+
+  // Y - VERDE
+  const yDir = new THREE.Vector3(0, 1, 0);
+  const yArrow = new THREE.ArrowHelper(yDir, new THREE.Vector3(0, 0, 0), axisLength, 0x00ff00);
+  controller.add(yArrow);
+
+  // Z - BLU (verso avanti)
+  const zDir = new THREE.Vector3(0, 0, -1); // -Z è in avanti in THREE.js
+  const zArrow = new THREE.ArrowHelper(zDir, new THREE.Vector3(0, 0, 0), axisLength, 0x0000ff);
+  controller.add(zArrow);
+}
+
+addAxesToController(controller1);
+addAxesToController(controller2);
+
+
 // === LOOP === //
 renderer.setAnimationLoop(() => {
   renderer.render(scene, camera);
