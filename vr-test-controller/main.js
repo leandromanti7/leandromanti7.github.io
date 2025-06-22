@@ -213,9 +213,16 @@ scene.add(camera);
 renderer.setAnimationLoop(() => {
   const controllers = [controller1, controller2];
 
-  // aggiorna la posizione della terna mondo ai piedi dell'utente
+  // === aggiornamento terna mondo ===
+  // Posizionata ai piedi
   userFrame.position.copy(camera.position);
+  userFrame.position.y = 0;
 
+  // Solo yaw (rotazione attorno a Y)
+  const cameraYaw = new THREE.Euler().setFromQuaternion(camera.quaternion, 'YXZ').y;
+  userFrame.rotation.set(0, cameraYaw, 0);
+
+  // === aggiornamento canvas ===
   vrCtx.fillStyle = 'black';
   vrCtx.fillRect(0, 0, vrCanvas.width, vrCanvas.height);
 
@@ -243,6 +250,6 @@ renderer.setAnimationLoop(() => {
   });
 
   vrTexture.needsUpdate = true;
-
   renderer.render(scene, camera);
 });
+
