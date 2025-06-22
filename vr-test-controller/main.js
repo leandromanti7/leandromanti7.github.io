@@ -214,7 +214,8 @@ renderer.setAnimationLoop(() => {
   const controllers = [controller1, controller2];
 
   // aggiorna la posizione della terna mondo ai piedi dell'utente
-  userFrame.position.copy(camera.position);
+  userFrame.position.x = camera.position.x;
+  userFrame.position.z = camera.position.z;
 
   vrCtx.fillStyle = 'black';
   vrCtx.fillRect(0, 0, vrCanvas.width, vrCanvas.height);
