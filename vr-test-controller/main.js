@@ -178,25 +178,24 @@ function addAxesToController(controller) {
 addAxesToController(controller1);
 addAxesToController(controller2);
 
-// === TERNA DI RIFERIMENTO ROBOT ===
-function addReferenceAxes(position = new THREE.Vector3(0, 0, 0)) {
-  const axisLength = 0.2;
+// === TERNA DI RIFERIMENTO AI PIEDI DELL'UTENTE ===
+const userFrame = new THREE.Group();
+scene.add(userFrame);
+
+function createWorldAxes(length = 0.2) {
   const group = new THREE.Group();
 
-  const xDir = new THREE.Vector3(0, 0, 1); // avanti
-  const yDir = new THREE.Vector3(-1, 0, 0); // sinistra
-  const zDir = new THREE.Vector3(0, 1, 0); // alto
+  const zArrow = new THREE.ArrowHelper(new THREE.Vector3(0, 1, 0), new THREE.Vector3(), length, 0x0000ff);
+  const xArrow = new THREE.ArrowHelper(new THREE.Vector3(0, 0, -1), new THREE.Vector3(), length, 0xff0000);
+  const yArrow = new THREE.ArrowHelper(new THREE.Vector3(-1, 0, 0), new THREE.Vector3(), length, 0x00ff00);
 
-  const xArrow = new THREE.ArrowHelper(xDir, new THREE.Vector3(0, 0, 0), axisLength, 0xff0000);
-  const yArrow = new THREE.ArrowHelper(yDir, new THREE.Vector3(0, 0, 0), axisLength, 0x00ff00);
-  const zArrow = new THREE.ArrowHelper(zDir, new THREE.Vector3(0, 0, 0), axisLength, 0x0000ff);
-
-  group.add(xArrow, yArrow, zArrow);
-  group.position.copy(position);
-  scene.add(group);
+  group.add(zArrow, xArrow, yArrow);
+  group.position.set(0, -1.6, 0);
+  return group;
 }
 
-addReferenceAxes(new THREE.Vector3(0, 0.01, 0)); // leggermente sopra il pavimento
+const feetAxes = createWorldAxes();
+userFrame.add(feetAxes);
 
 // === HUD VR PANEL ===
 const vrCanvas = document.createElement('canvas');
@@ -213,6 +212,9 @@ scene.add(camera);
 
 renderer.setAnimationLoop(() => {
   const controllers = [controller1, controller2];
+
+  // aggiorna la posizione della terna mondo ai piedi dell'utente
+  userFrame.position.copy(camera.position);
 
   vrCtx.fillStyle = 'black';
   vrCtx.fillRect(0, 0, vrCanvas.width, vrCanvas.height);
