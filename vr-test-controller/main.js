@@ -95,6 +95,7 @@ scene.add(forearmLeft);
 const wristLeft = createJoint(wristRadius);
 wristLeft.position.copy(elbowLeft.position).add(new THREE.Vector3(0, -forearmLength, 0));
 scene.add(wristLeft);
+addAxesToObject(wristLeft);
 
 const upperArmRight = createSegment(armLength, 0x44ff44);
 upperArmRight.position.copy(shoulderRight.position);
@@ -111,6 +112,7 @@ scene.add(forearmRight);
 const wristRight = createJoint(wristRadius);
 wristRight.position.copy(elbowRight.position).add(new THREE.Vector3(0, -forearmLength, 0));
 scene.add(wristRight);
+addAxesToObject(wristRight);
 
 function createPinzaHand(color = 0xdddddd) {
   const group = new THREE.Group();
@@ -209,6 +211,14 @@ const vrPlane = new THREE.Mesh(new THREE.PlaneGeometry(0.7, 0.35), vrMaterial);
 vrPlane.position.set(0, 0, -0.8);
 camera.add(vrPlane);
 scene.add(camera);
+
+function addAxesToObject(object, length = 0.1) {
+  const x = new THREE.ArrowHelper(new THREE.Vector3(1, 0, 0), new THREE.Vector3(), length, 0xff0000);
+  const y = new THREE.ArrowHelper(new THREE.Vector3(0, 1, 0), new THREE.Vector3(), length, 0x00ff00);
+  const z = new THREE.ArrowHelper(new THREE.Vector3(0, 0, 1), new THREE.Vector3(), length, 0x0000ff);
+  object.add(x, y, z);
+}
+
 
 renderer.setAnimationLoop(() => {
   const controllers = [controller1, controller2];
