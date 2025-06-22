@@ -187,7 +187,7 @@ function addAxesToController(controller) {
   controller.add(yArrow);
 
   // Z - BLU → resta entrante nella scena (asse -Z globale)
-  const zDir = new THREE.Vector3(0, 0, -1);
+  const zDir = new THREE.Vector3(0, 0, 1);
   const zArrow = new THREE.ArrowHelper(zDir, new THREE.Vector3(0, 0, 0), axisLength, 0x0000ff);
   controller.add(zArrow);
 }
