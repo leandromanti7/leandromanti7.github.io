@@ -230,10 +230,10 @@ renderer.setAnimationLoop(() => {
     const toDeg = rad => (rad * 180 / Math.PI).toFixed(1);
 
     return [
-      Controller ${i + 1} (${i === 0 ? 'sx' : 'dx'}),
-      Pos:  x:${pos.x.toFixed(2)} y:${pos.y.toFixed(2)} z:${pos.z.toFixed(2)} m,
-      Quat: x:${quat.x.toFixed(2)} y:${quat.y.toFixed(2)} z:${quat.z.toFixed(2)} w:${quat.w.toFixed(2)},
-      Euler: pitch:${toDeg(euler.x)}° yaw:${toDeg(euler.y)}° roll:${toDeg(euler.z)}°,
+      `Controller ${i + 1} (${i === 0 ? 'sx' : 'dx'})`,
+      `Pos:  x:${pos.x.toFixed(2)} y:${pos.y.toFixed(2)} z:${pos.z.toFixed(2)} m`,
+      `Quat: x:${quat.x.toFixed(2)} y:${quat.y.toFixed(2)} z:${quat.z.toFixed(2)} w:${quat.w.toFixed(2)}`,
+      `Euler: pitch:${toDeg(euler.x)}° yaw:${toDeg(euler.y)}° roll:${toDeg(euler.z)}°`,
       ''
     ];
   }).flat();
