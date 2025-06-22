@@ -116,6 +116,41 @@ const wristRight = createJoint(wristRadius);
 wristRight.position.copy(elbowRight.position).add(new THREE.Vector3(0, -forearmLength, 0));
 scene.add(wristRight);
 
+// === MANI A PINZA === //
+function createPinzaHand(color = 0xdddddd) {
+  const group = new THREE.Group();
+
+  // Base mano
+  const base = new THREE.BoxGeometry(0.05, 0.01, 0.05);
+  const baseMesh = new THREE.Mesh(base, new THREE.MeshStandardMaterial({ color }));
+  group.add(baseMesh);
+
+  // Dita
+  const finger1 = new THREE.Mesh(
+    new THREE.BoxGeometry(0.01, 0.04, 0.01),
+    new THREE.MeshStandardMaterial({ color: 0xffffff })
+  );
+  finger1.position.set(-0.015, -0.025, 0);
+  group.add(finger1);
+
+  const finger2 = finger1.clone();
+  finger2.position.x = 0.015;
+  group.add(finger2);
+
+  return group;
+}
+
+// Mano sinistra
+const handLeft = createPinzaHand();
+handLeft.position.copy(wristLeft.position).add(new THREE.Vector3(0, -0.04, 0)); // sotto al polso
+scene.add(handLeft);
+
+// Mano destra
+const handRight = createPinzaHand();
+handRight.position.copy(wristRight.position).add(new THREE.Vector3(0, -0.04, 0));
+scene.add(handRight);
+
+
 // === CONTROLLER XR (non usati ancora) === //
 const controller1 = renderer.xr.getController(0);
 const controller2 = renderer.xr.getController(1);
