@@ -178,6 +178,26 @@ function addAxesToController(controller) {
 addAxesToController(controller1);
 addAxesToController(controller2);
 
+// === TERNA DI RIFERIMENTO ROBOT ===
+function addReferenceAxes(position = new THREE.Vector3(0, 0, 0)) {
+  const axisLength = 0.2;
+  const group = new THREE.Group();
+
+  const xDir = new THREE.Vector3(0, 0, 1); // avanti
+  const yDir = new THREE.Vector3(-1, 0, 0); // sinistra
+  const zDir = new THREE.Vector3(0, 1, 0); // alto
+
+  const xArrow = new THREE.ArrowHelper(xDir, new THREE.Vector3(0, 0, 0), axisLength, 0xff0000);
+  const yArrow = new THREE.ArrowHelper(yDir, new THREE.Vector3(0, 0, 0), axisLength, 0x00ff00);
+  const zArrow = new THREE.ArrowHelper(zDir, new THREE.Vector3(0, 0, 0), axisLength, 0x0000ff);
+
+  group.add(xArrow, yArrow, zArrow);
+  group.position.copy(position);
+  scene.add(group);
+}
+
+addReferenceAxes(new THREE.Vector3(0, 0.01, 0)); // leggermente sopra il pavimento
+
 // === HUD VR PANEL ===
 const vrCanvas = document.createElement('canvas');
 vrCanvas.width = 512;
