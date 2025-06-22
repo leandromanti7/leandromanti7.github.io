@@ -156,6 +156,23 @@ const controller1 = renderer.xr.getController(0);
 const controller2 = renderer.xr.getController(1);
 scene.add(controller1, controller2);
 
+// === MODELLI VISIBILI PER I CONTROLLER === //
+function createControllerMesh(color) {
+  const geometry = new THREE.CylinderGeometry(0.015, 0.015, 0.1, 12);
+  geometry.rotateX(Math.PI / 2); // orienta in avanti
+  const material = new THREE.MeshStandardMaterial({ color });
+  return new THREE.Mesh(geometry, material);
+}
+
+// Controller sinistro (rosso)
+const controllerGrip1 = createControllerMesh(0xff0000);
+controller1.add(controllerGrip1);
+
+// Controller destro (verde)
+const controllerGrip2 = createControllerMesh(0x00ff00);
+controller2.add(controllerGrip2);
+scene.add(controller1, controller2);
+
 // === LOOP === //
 renderer.setAnimationLoop(() => {
   renderer.render(scene, camera);
