@@ -136,10 +136,12 @@ function createPinzaHand(color = 0xdddddd) {
 const handLeft = createPinzaHand();
 handLeft.position.copy(wristLeft.position).add(new THREE.Vector3(0, -0.04, 0));
 scene.add(handLeft);
+addAxesToHand(handLeft);
 
 const handRight = createPinzaHand();
 handRight.position.copy(wristRight.position).add(new THREE.Vector3(0, -0.04, 0));
 scene.add(handRight);
+addAxesToHand(handRight);
 
 const controller1 = renderer.xr.getController(0);
 const controller2 = renderer.xr.getController(1);
@@ -223,18 +225,6 @@ function addAxesToHand(hand, length = 0.1) {
 
   hand.add(xArrow, yArrow, zArrow);
 }
-
-const handLeft = createPinzaHand();
-handLeft.position.copy(wristLeft.position).add(new THREE.Vector3(0, -0.04, 0));
-scene.add(handLeft);
-
-const handRight = createPinzaHand();
-handRight.position.copy(wristRight.position).add(new THREE.Vector3(0, -0.04, 0));
-scene.add(handRight);
-
-addAxesToHand(handLeft);
-addAxesToHand(handRight);
-
 
 renderer.setAnimationLoop(() => {
   const controllers = [controller1, controller2];
