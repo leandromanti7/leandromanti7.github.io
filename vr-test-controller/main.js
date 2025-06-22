@@ -196,8 +196,41 @@ function addAxesToController(controller) {
 addAxesToController(controller1);
 addAxesToController(controller2);
 
+// === PANNELLO INFO ===
+const infoPanel = document.createElement('div');
+infoPanel.style.position = 'absolute';
+infoPanel.style.top = '10px';
+infoPanel.style.left = '10px';
+infoPanel.style.padding = '10px';
+infoPanel.style.backgroundColor = 'rgba(0,0,0,0.6)';
+infoPanel.style.color = '#fff';
+infoPanel.style.fontFamily = 'monospace';
+infoPanel.style.fontSize = '14px';
+infoPanel.style.whiteSpace = 'pre-line';
+infoPanel.style.zIndex = 1;
+document.body.appendChild(infoPanel);
+
 
 // === LOOP === //
 renderer.setAnimationLoop(() => {
+  const controllers = [controller1, controller2];
+
+  const dataText = controllers.map((ctrl, i) => {
+    const pos = ctrl.position;
+    const quat = ctrl.quaternion;
+
+    // Calcolo Eulero da quaternion
+    const euler = new THREE.Euler().setFromQuaternion(quat, 'YXZ'); // ordine standard VR
+    const toDeg = rad => (rad * 180 / Math.PI).toFixed(1);
+
+    return `Controller ${i + 1} (${i === 0 ? 'sx' : 'dx'})
+Pos:  x:${pos.x.toFixed(2)} y:${pos.y.toFixed(2)} z:${pos.z.toFixed(2)} m
+Quat: x:${quat.x.toFixed(2)} y:${quat.y.toFixed(2)} z:${quat.z.toFixed(2)} w:${quat.w.toFixed(2)}
+Euler: pitch: ${toDeg(euler.x)}°  yaw: ${toDeg(euler.y)}°  roll: ${toDeg(euler.z)}°`;
+  });
+
+  infoPanel.textContent = dataText.join('\n\n');
+
   renderer.render(scene, camera);
 });
+
