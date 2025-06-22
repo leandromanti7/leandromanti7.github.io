@@ -95,7 +95,6 @@ scene.add(forearmLeft);
 const wristLeft = createJoint(wristRadius);
 wristLeft.position.copy(elbowLeft.position).add(new THREE.Vector3(0, -forearmLength, 0));
 scene.add(wristLeft);
-addAxesToObject(wristLeft);
 
 const upperArmRight = createSegment(armLength, 0x44ff44);
 upperArmRight.position.copy(shoulderRight.position);
@@ -112,7 +111,6 @@ scene.add(forearmRight);
 const wristRight = createJoint(wristRadius);
 wristRight.position.copy(elbowRight.position).add(new THREE.Vector3(0, -forearmLength, 0));
 scene.add(wristRight);
-addAxesToObject(wristRight);
 
 function createPinzaHand(color = 0xdddddd) {
   const group = new THREE.Group();
@@ -212,12 +210,30 @@ vrPlane.position.set(0, 0, -0.8);
 camera.add(vrPlane);
 scene.add(camera);
 
-function addAxesToObject(object, length = 0.1) {
-  const x = new THREE.ArrowHelper(new THREE.Vector3(1, 0, 0), new THREE.Vector3(), length, 0xff0000);
-  const y = new THREE.ArrowHelper(new THREE.Vector3(0, 1, 0), new THREE.Vector3(), length, 0x00ff00);
-  const z = new THREE.ArrowHelper(new THREE.Vector3(0, 0, 1), new THREE.Vector3(), length, 0x0000ff);
-  object.add(x, y, z);
+function addAxesToHand(hand, length = 0.1) {
+  const origin = new THREE.Vector3();
+
+  const zDir = new THREE.Vector3(0, 1, 0); // Z verso su
+  const xDir = new THREE.Vector3(0, 0, -1); // X verso avanti
+  const yDir = new THREE.Vector3(-1, 0, 0); // Y verso sinistra
+
+  const zArrow = new THREE.ArrowHelper(zDir, origin, length, 0x0000ff); // blu
+  const xArrow = new THREE.ArrowHelper(xDir, origin, length, 0xff0000); // rosso
+  const yArrow = new THREE.ArrowHelper(yDir, origin, length, 0x00ff00); // verde
+
+  hand.add(xArrow, yArrow, zArrow);
 }
+
+const handLeft = createPinzaHand();
+handLeft.position.copy(wristLeft.position).add(new THREE.Vector3(0, -0.04, 0));
+scene.add(handLeft);
+
+const handRight = createPinzaHand();
+handRight.position.copy(wristRight.position).add(new THREE.Vector3(0, -0.04, 0));
+scene.add(handRight);
+
+addAxesToHand(handLeft);
+addAxesToHand(handRight);
 
 
 renderer.setAnimationLoop(() => {
