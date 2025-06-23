@@ -14,7 +14,32 @@ export function createScene() {
   renderer.xr.enabled = true;
 
   document.body.appendChild(renderer.domElement);
-  document.body.appendChild(VRButton.createButton(renderer));
+
+  // Verifica WebXR
+  if ('xr' in navigator) {
+    navigator.xr.isSessionSupported('immersive-vr').then((supported) => {
+      if (supported) {
+        document.body.appendChild(VRButton.createButton(renderer));
+      } else {
+        showXRNotSupported();
+      }
+    });
+  } else {
+    showXRNotSupported();
+  }
+
+  function showXRNotSupported() {
+    const msg = document.createElement('div');
+    msg.textContent = '⚠️ WebXR non supportato. Prova con un visore VR o browser compatibile.';
+    msg.style.color = 'white';
+    msg.style.background = 'darkred';
+    msg.style.padding = '1rem';
+    msg.style.position = 'absolute';
+    msg.style.top = '20px';
+    msg.style.left = '20px';
+    msg.style.zIndex = '9999';
+    document.body.appendChild(msg);
+  }
 
   return { scene, camera, renderer };
 }
