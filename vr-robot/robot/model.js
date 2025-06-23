@@ -1,5 +1,5 @@
 // robot/model.js
-import * as THREE from '../three.module.js';//
+import * as THREE from '../three.module.js';
 
 export function buildRobot(scene) {
   const robot = {};
