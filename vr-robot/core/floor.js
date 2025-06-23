@@ -1,5 +1,5 @@
 // core/floor.js
-import * as THREE from './three.module.js';
+import * as THREE from '../three.module.js';
 
 let userFrame;
 
