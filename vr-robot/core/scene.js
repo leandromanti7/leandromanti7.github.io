@@ -1,6 +1,6 @@
 // core/scene.js
-import * as THREE from './three.module.js';
-import { VRButton } from './VRButton.js';
+import * as THREE from '../three.module.js';
+import { VRButton } from '../VRButton.js';
 
 export function createScene() {
   const scene = new THREE.Scene();
