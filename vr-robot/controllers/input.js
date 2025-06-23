@@ -1,5 +1,5 @@
 // controllers/input.js
-import * as THREE from '../vr-test-local/js/three.module.js';
+import * as THREE from './three.module.js';
 
 export function setupControllers(scene, renderer) {
   const controller1 = renderer.xr.getController(0);
