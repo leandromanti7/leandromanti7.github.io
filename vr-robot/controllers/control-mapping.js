@@ -1,5 +1,5 @@
 // controllers/control-mapping.js
-import * as THREE from '../vr-test-local/js/three.module.js';
+import * as THREE from './three.module.js';
 import { clamp, lerp } from '../utils/helpers.js';
 
 let offsetYawL = null;
