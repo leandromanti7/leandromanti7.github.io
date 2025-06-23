@@ -35,10 +35,10 @@ export function buildRobot() {
 
   // === Spalle ===
   const shoulderLeft = createJoint(shoulderRadius);
-  shoulderLeft.position.set(-torsoWidth / 2, 1.6 + torsoHeight / 2 - shoulderRadius, -0.5);
+  shoulderLeft.position.set(-torsoWidth / 2, 1.6 + torsoHeight / 2 - shoulderRadius, 0);
 
   const shoulderRight = createJoint(shoulderRadius);
-  shoulderRight.position.set(torsoWidth / 2, 1.6 + torsoHeight / 2 - shoulderRadius, -0.5);
+  shoulderRight.position.set(torsoWidth / 2, 1.6 + torsoHeight / 2 - shoulderRadius, 0);
 
   // === Braccia sx ===
   const upperArmLeft = createSegment(armLength, 0xff4444);
