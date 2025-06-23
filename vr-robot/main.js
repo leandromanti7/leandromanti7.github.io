@@ -12,21 +12,41 @@ import { setupControllers } from './controllers/input.js';
 import { applyControlMapping } from './controllers/control-mapping.js';
 
 import { initDebugPanel, updateDebugPanel } from './utils/debug-panel.js';
+import { logStatus } from './utils/logger.js'; // <-- nuovo
 
-const { scene, camera, renderer } = createScene();
+try {
+  const { scene, camera, renderer } = createScene();
+  logStatus('✅ createScene completato');
 
-addLighting(scene);
-createFloor(scene);
+  addLighting(scene);
+  logStatus('✅ addLighting completato');
 
-const robot = buildRobot(scene);
-setupHierarchy(robot);
-addAxesToRobot(robot);
+  createFloor(scene);
+  logStatus('✅ createFloor completato');
 
-const controllers = setupControllers(scene, renderer);
-initDebugPanel(camera);
+  const robot = buildRobot(scene);
+  logStatus('✅ buildRobot completato');
 
-renderer.setAnimationLoop(() => {
-  applyControlMapping(robot, controllers);
-  updateDebugPanel(controllers);
-  renderer.render(scene, camera);
-});
+  setupHierarchy(robot);
+  logStatus('✅ setupHierarchy completato');
+
+  addAxesToRobot(robot);
+  logStatus('✅ addAxesToRobot completato');
+
+  const controllers = setupControllers(scene, renderer);
+  logStatus('✅ setupControllers completato');
+
+  initDebugPanel(camera);
+  logStatus('✅ initDebugPanel completato');
+
+  renderer.setAnimationLoop(() => {
+    applyControlMapping(robot, controllers);
+    updateDebugPanel(controllers);
+    renderer.render(scene, camera);
+  });
+  logStatus('✅ Animation loop avviato');
+
+} catch (err) {
+  logStatus('❌ Errore in main.js: ' + err.message, true);
+  console.error(err);
+}
