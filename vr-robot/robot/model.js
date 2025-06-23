@@ -1,7 +1,7 @@
 // robot/model.js
 import * as THREE from '../three.module.js';
 
-export function buildRobot(scene) {
+export function buildRobot() {
   const robot = {};
 
   // === Parametri ===
@@ -16,6 +16,7 @@ export function buildRobot(scene) {
 
   // === Busto ===
   const torso = new THREE.Group();
+
   const chest = new THREE.Mesh(
     new THREE.CylinderGeometry(torsoWidth / 2, torsoWidth / 2, torsoHeight, 16),
     new THREE.MeshStandardMaterial({ color: 0x8888ff })
@@ -31,50 +32,41 @@ export function buildRobot(scene) {
   torso.add(head);
 
   torso.position.z = -0.5;
-  scene.add(torso);
 
   // === Spalle ===
   const shoulderLeft = createJoint(shoulderRadius);
   shoulderLeft.position.set(-torsoWidth / 2, 1.6 + torsoHeight / 2 - shoulderRadius, -0.5);
-  scene.add(shoulderLeft);
 
-  const shoulderRight = shoulderLeft.clone();
-  shoulderRight.position.x = torsoWidth / 2;
-  scene.add(shoulderRight);
+  const shoulderRight = createJoint(shoulderRadius);
+  shoulderRight.position.set(torsoWidth / 2, 1.6 + torsoHeight / 2 - shoulderRadius, -0.5);
 
-  // === Braccia ===
+  // === Braccia sx ===
   const upperArmLeft = createSegment(armLength, 0xff4444);
-  upperArmLeft.position.copy(shoulderLeft.position);
-  scene.add(upperArmLeft);
+  upperArmLeft.position.y = 0;
 
   const elbowLeft = createJoint(elbowRadius);
-  elbowLeft.position.copy(shoulderLeft.position).add(new THREE.Vector3(0, -armLength, 0));
-  scene.add(elbowLeft);
+  elbowLeft.position.y = -armLength;
 
   const forearmLeft = createSegment(forearmLength, 0xaa0000);
-  forearmLeft.position.copy(elbowLeft.position);
-  scene.add(forearmLeft);
+  forearmLeft.position.y = 0;
 
   const wristLeft = createJoint(wristRadius);
-  wristLeft.position.copy(elbowLeft.position).add(new THREE.Vector3(0, -forearmLength, 0));
-  scene.add(wristLeft);
+  wristLeft.position.y = -forearmLength;
 
+  // === Braccia dx ===
   const upperArmRight = createSegment(armLength, 0x44ff44);
-  upperArmRight.position.copy(shoulderRight.position);
-  scene.add(upperArmRight);
+  upperArmRight.position.y = 0;
 
   const elbowRight = createJoint(elbowRadius);
-  elbowRight.position.copy(shoulderRight.position).add(new THREE.Vector3(0, -armLength, 0));
-  scene.add(elbowRight);
+  elbowRight.position.y = -armLength;
 
   const forearmRight = createSegment(forearmLength, 0x00aa00);
-  forearmRight.position.copy(elbowRight.position);
-  scene.add(forearmRight);
+  forearmRight.position.y = 0;
 
   const wristRight = createJoint(wristRadius);
-  wristRight.position.copy(elbowRight.position).add(new THREE.Vector3(0, -forearmLength, 0));
-  scene.add(wristRight);
+  wristRight.position.y = -forearmLength;
 
+  // === Ritorna tutto ===
   robot.parts = {
     torso,
     shoulderLeft, shoulderRight,
