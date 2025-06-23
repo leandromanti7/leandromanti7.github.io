@@ -30,6 +30,9 @@ try {
   setupHierarchy(robot);
   logStatus('✅ setupHierarchy completato');
 
+  scene.add(robot.root);  // <-- aggiunto!
+  logStatus('✅ robot.root aggiunto alla scena');
+
   addAxesToRobot(robot);
   logStatus('✅ addAxesToRobot completato');
 
