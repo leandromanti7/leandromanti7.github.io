@@ -1,5 +1,5 @@
 // robot/axes.js
-import * as THREE from '../vr-test-local/js/three.module.js';
+import * as THREE from './three.module.js';
 
 export function addAxesToRobot(robot) {
   const { wristLeft, wristRight } = robot.parts;
