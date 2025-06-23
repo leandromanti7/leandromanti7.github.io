@@ -1,5 +1,5 @@
 // robot/kinematics.js
-import * as THREE from '../vr-test-local/js/three.module.js';
+import * as THREE from './three.module.js';
 
 /**
  * Esempio base di cinematica diretta:
