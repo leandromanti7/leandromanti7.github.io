@@ -76,6 +76,8 @@ export function buildRobot() {
     wristLeft, wristRight
   };
 
+  robot.root = torso; // <-- IMPORTANTE: nodo radice
+
   return robot;
 }
 
