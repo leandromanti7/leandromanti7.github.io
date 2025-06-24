@@ -21,7 +21,8 @@ export function buildRobot() {
     new THREE.CylinderGeometry(torsoWidth / 2, torsoWidth / 2, torsoHeight, 16),
     new THREE.MeshStandardMaterial({ color: 0x8888ff })
   );
-  chest.position.y = 1.6;
+  //chest.position.y = 1.6;
+  chest.position.y = 1.1;
   torso.add(chest);
 
   const head = new THREE.Mesh(
@@ -35,10 +36,10 @@ export function buildRobot() {
 
   // === Spalle ===
   const shoulderLeft = createJoint(shoulderRadius);
-  shoulderLeft.position.set(-torsoWidth / 2, 1.6 + torsoHeight / 2 - shoulderRadius + 0.05, 0);
+  shoulderLeft.position.set(-torsoWidth / 2 - 0.05, 1.6 + torsoHeight / 2 - shoulderRadius, 0);
 
   const shoulderRight = createJoint(shoulderRadius);
-  shoulderRight.position.set(torsoWidth / 2, 1.6 + torsoHeight / 2 - shoulderRadius, 0);
+  shoulderRight.position.set(torsoWidth / 2 + 0.05, 1.6 + torsoHeight / 2 - shoulderRadius, 0);
 
   // === Braccia sx ===
   const upperArmLeft = createSegment(armLength, 0xff4444);
