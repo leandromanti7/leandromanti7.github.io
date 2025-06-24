@@ -29,17 +29,20 @@ export function buildRobot() {
     new THREE.SphereGeometry(0.1, 16, 16),
     new THREE.MeshStandardMaterial({ color: 0xffffcc })
   );
-  head.position.y = 1.6 + torsoHeight / 2 + 0.1;
+  //head.position.y = 1.6 + torsoHeight / 2 + 0.1;
+  head.position.y = 1.1 + torsoHeight / 2 + 0.1;
   torso.add(head);
 
   torso.position.z = -0.5;
 
   // === Spalle ===
   const shoulderLeft = createJoint(shoulderRadius);
-  shoulderLeft.position.set(-torsoWidth / 2 - 0.05, 1.6 + torsoHeight / 2 - shoulderRadius, 0);
+  //shoulderLeft.position.set(-torsoWidth / 2 - 0.05, 1.6 + torsoHeight / 2 - shoulderRadius, 0);
+  shoulderLeft.position.set(-torsoWidth / 2 - 0.05, 1.1 + torsoHeight / 2 - shoulderRadius, 0);
 
   const shoulderRight = createJoint(shoulderRadius);
-  shoulderRight.position.set(torsoWidth / 2 + 0.05, 1.6 + torsoHeight / 2 - shoulderRadius, 0);
+  //shoulderRight.position.set(torsoWidth / 2 + 0.05, 1.6 + torsoHeight / 2 - shoulderRadius, 0);
+  shoulderRight.position.set(torsoWidth / 2 + 0.05, 1.1 + torsoHeight / 2 - shoulderRadius, 0);
 
   // === Braccia sx ===
   const upperArmLeft = createSegment(armLength, 0xff4444);
