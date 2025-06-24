@@ -35,7 +35,7 @@ export function buildRobot() {
 
   // === Spalle ===
   const shoulderLeft = createJoint(shoulderRadius);
-  shoulderLeft.position.set(-torsoWidth / 2, 1.6 + torsoHeight / 2 - shoulderRadius, 0);
+  shoulderLeft.position.set(-torsoWidth / 2, 1.6 + torsoHeight / 2 - shoulderRadius + 0.05, 0);
 
   const shoulderRight = createJoint(shoulderRadius);
   shoulderRight.position.set(torsoWidth / 2, 1.6 + torsoHeight / 2 - shoulderRadius, 0);
