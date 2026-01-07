@@ -23,21 +23,27 @@ html, body {
   filter: blur(1px);
 
   background: black;
-  z-index: -1;
 }
+
 
 
 #overlay {
   position: fixed;
   inset: 0;
+
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   align-items: center;
+
   padding-bottom: 8vh;
+
   color: #00bfff;
   text-align: center;
+
+  z-index: 10; /* 👈 QUESTO è il trucco */
 }
+
 
 #countdown {
   font-size: 3rem;
