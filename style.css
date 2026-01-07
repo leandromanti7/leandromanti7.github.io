@@ -36,7 +36,7 @@ html, body {
   justify-content: flex-end;
   align-items: center;
 
-  padding-bottom: 8vh;
+  padding-bottom: 10vh;
 
   color: #00bfff;
   text-align: center;
@@ -61,7 +61,7 @@ html, body {
 
 @media (max-width: 768px) {
   #bg-video {
-    object-position: 50% 20%;
+    object-position: 50% 30%;
   }
 }
 
