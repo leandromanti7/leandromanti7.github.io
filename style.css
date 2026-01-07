@@ -58,3 +58,10 @@ html, body {
   font-size: 0.9rem;
   opacity: 0.65;
 }
+
+@media (max-width: 768px) {
+  #bg-video {
+    object-position: 50% 20%;
+  }
+}
+
