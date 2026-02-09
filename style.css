@@ -59,6 +59,16 @@ html, body {
   opacity: 0.65;
 }
 
+#notice{
+  margin-top: 12px;
+  font-size: 0.9rem;
+  opacity: 0.75;
+  max-width: 520px;
+  line-height: 1.4;
+  text-shadow: 0 0 10px rgba(0,191,255,0.25);
+}
+
+
 @media (max-width: 768px) {
   #bg-video {
     object-position: 50% 30%;
