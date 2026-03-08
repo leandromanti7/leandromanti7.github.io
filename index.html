@@ -1,34 +1,1062 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Manti Industries</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="/favicon.ico" type="image/x-icon">
-<link rel="icon" href="/favicon.png" type="image/png">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta name="theme-color" content="#000000">
-<meta name="description" content="Manti Industries — independent lab exploring ideas, systems and future technologies.">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manti Industries — Independent Experimental Lab</title>
+  <meta name="description" content="Manti Industries is an independent experimental lab exploring robotics, interfaces and digital worlds." />
+  <style>
+    :root {
+      --bg: #020816;
+      --bg-2: #05122b;
+      --panel: rgba(7, 21, 51, 0.72);
+      --panel-strong: rgba(7, 21, 51, 0.9);
+      --line: rgba(120, 191, 255, 0.18);
+      --text: #ecf7ff;
+      --muted: #9bb6d4;
+      --aqua: #33e4ff;
+      --cyan: #1ec8ff;
+      --blue: #3b74ff;
+      --glow: 0 0 28px rgba(51, 228, 255, 0.25);
+      --radius: 24px;
+      --radius-sm: 18px;
+      --container: 1180px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 20% 20%, rgba(38, 110, 255, 0.22), transparent 26%),
+        radial-gradient(circle at 82% 16%, rgba(16, 226, 255, 0.18), transparent 20%),
+        radial-gradient(circle at 50% 100%, rgba(24, 75, 190, 0.18), transparent 36%),
+        linear-gradient(135deg, #020816 0%, #04102a 48%, #020816 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(125, 170, 255, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(125, 170, 255, 0.045) 1px, transparent 1px);
+      background-size: 52px 52px;
+      mask-image: radial-gradient(circle at center, black 45%, transparent 95%);
+      opacity: 0.7;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    .container {
+      width: min(var(--container), calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .site-shell {
+      position: relative;
+      isolation: isolate;
+    }
+
+    .site-shell::before,
+    .site-shell::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      filter: blur(24px);
+      z-index: -1;
+      opacity: 0.45;
+    }
+
+    .site-shell::before {
+      width: 340px;
+      height: 340px;
+      top: 120px;
+      right: -80px;
+      background: rgba(46, 219, 255, 0.18);
+    }
+
+    .site-shell::after {
+      width: 280px;
+      height: 280px;
+      top: 520px;
+      left: -100px;
+      background: rgba(68, 105, 255, 0.2);
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: blur(12px);
+      background: rgba(2, 8, 22, 0.72);
+      border-bottom: 1px solid rgba(120, 191, 255, 0.08);
+    }
+
+    .nav {
+      min-height: 86px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .brand img {
+      width: 160px;
+      height: auto;
+      filter: drop-shadow(0 0 16px rgba(49, 220, 255, 0.18));
+    }
+
+    .brand-copy {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .brand-copy strong {
+      font-size: 0.98rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .brand-copy span {
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .nav-links a {
+      color: #dceeff;
+      font-size: 0.96rem;
+      opacity: 0.9;
+      transition: 0.2s ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a:focus-visible {
+      color: white;
+      text-shadow: 0 0 16px rgba(51, 228, 255, 0.32);
+    }
+
+    .lang-toggle {
+      display: inline-flex;
+      gap: 8px;
+      margin-left: 8px;
+      padding: 5px;
+      border: 1px solid rgba(119, 188, 255, 0.2);
+      border-radius: 999px;
+      background: rgba(8, 22, 53, 0.7);
+    }
+
+    .lang-toggle button {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font: inherit;
+      padding: 8px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .lang-toggle button.active {
+      background: linear-gradient(135deg, var(--cyan), #4fe4ff);
+      color: #04203c;
+      font-weight: 700;
+      box-shadow: var(--glow);
+    }
+
+    main { padding-bottom: 72px; }
+
+    section { padding: 48px 0; }
+
+    .hero {
+      padding: 42px 0 34px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    .hero-panel,
+    .visual-panel,
+    .glass-card,
+    .project-card,
+    .note-card,
+    .contact-card,
+    .community-card {
+      background: linear-gradient(180deg, rgba(8, 26, 59, 0.78), rgba(4, 15, 35, 0.88));
+      border: 1px solid rgba(109, 183, 255, 0.16);
+      border-radius: var(--radius);
+      box-shadow: 0 20px 80px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255,255,255,0.04);
+      backdrop-filter: blur(10px);
+    }
+
+    .hero-panel {
+      padding: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-panel::before {
+      content: "";
+      position: absolute;
+      inset: auto -20% -36% auto;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(55, 234, 255, 0.26), transparent 65%);
+      filter: blur(20px);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(95, 186, 255, 0.18);
+      color: #bfeeff;
+      background: rgba(10, 28, 66, 0.54);
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.6rem, 5vw, 4.9rem);
+      line-height: 0.98;
+      margin: 20px 0 16px;
+      max-width: 11ch;
+      letter-spacing: -0.04em;
+    }
+
+    .hero p.lead {
+      margin: 0 0 28px;
+      max-width: 60ch;
+      color: var(--muted);
+      font-size: 1.07rem;
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 26px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 50px;
+      padding: 0 20px;
+      border-radius: 999px;
+      border: 1px solid rgba(120, 191, 255, 0.22);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--cyan), #67f0ff);
+      color: #05213f;
+      box-shadow: 0 0 28px rgba(52, 225, 255, 0.22);
+    }
+
+    .btn-secondary {
+      color: #def5ff;
+      background: rgba(10, 28, 66, 0.46);
+    }
+
+    .mini-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .mini-stats div {
+      padding: 14px;
+      border-radius: var(--radius-sm);
+      background: rgba(8, 22, 53, 0.62);
+      border: 1px solid rgba(115, 188, 255, 0.1);
+    }
+
+    .mini-stats strong {
+      display: block;
+      font-size: 1rem;
+      margin-bottom: 6px;
+    }
+
+    .mini-stats span {
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.45;
+    }
+
+    .mini-stats span {
+  color: var(--muted);
+}
+
+.mini-stats strong span {
+  color: var(--text);
+}
+
+    .visual-panel {
+      position: relative;
+      min-height: 580px;
+      overflow: hidden;
+      padding: 24px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-start;
+      background:
+        radial-gradient(circle at 32% 58%, rgba(64, 235, 255, 0.5), rgba(37, 120, 255, 0.18) 24%, rgba(3, 12, 28, 0) 42%),
+        linear-gradient(155deg, rgba(10, 33, 79, 0.96), rgba(3, 12, 28, 0.95));
+    }
+
+    .visual-panel::before,
+    .visual-panel::after {
+      content: "";
+      position: absolute;
+      inset: auto;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .visual-panel::before {
+      width: 540px;
+      height: 540px;
+      left: -60px;
+      bottom: -140px;
+      background:
+        radial-gradient(circle at center,
+          rgba(255,255,255,0.95) 0,
+          rgba(120, 243, 255, 0.9) 5%,
+          rgba(35, 205, 255, 0.4) 12%,
+          rgba(15, 76, 210, 0.22) 20%,
+          rgba(0,0,0,0) 21%),
+        repeating-radial-gradient(circle at center,
+          rgba(70, 222, 255, 0.9) 0 2px,
+          rgba(0,0,0,0) 12px 22px,
+          rgba(60, 128, 255, 0.65) 23px 25px,
+          rgba(0,0,0,0) 30px 42px);
+      filter: blur(0.2px) drop-shadow(0 0 24px rgba(61, 228, 255, 0.45));
+      opacity: 0.95;
+    }
+
+    .visual-panel::after {
+      width: 72%;
+      height: 72%;
+      left: 10%;
+      bottom: 10%;
+      background:
+        radial-gradient(circle, rgba(25, 233, 255, 0.1), transparent 65%),
+        repeating-radial-gradient(circle,
+          rgba(90, 198, 255, 0.14) 0 1px,
+          rgba(0,0,0,0) 18px 33px);
+      opacity: 0.85;
+    }
+
+    .visual-badges {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 14px;
+      width: min(280px, 90%);
+    }
+
+    .glass-card {
+      padding: 18px;
+      border-radius: 20px;
+      background: rgba(6, 18, 43, 0.62);
+    }
+
+    .glass-card strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 1rem;
+    }
+
+    .glass-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 0.94rem;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: end;
+      margin-bottom: 22px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(1.8rem, 3vw, 3rem);
+      letter-spacing: -0.03em;
+    }
+
+    .section-head p {
+      margin: 0;
+      max-width: 58ch;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .content-box {
+      padding: 28px;
+      border-radius: var(--radius);
+      background: rgba(6, 19, 46, 0.66);
+      border: 1px solid rgba(116, 188, 255, 0.12);
+    }
+
+    .content-box p {
+      color: var(--muted);
+      line-height: 1.7;
+      margin: 0 0 16px;
+    }
+
+    .chip-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .chip {
+      border-radius: 999px;
+      border: 1px solid rgba(110, 185, 255, 0.15);
+      padding: 10px 14px;
+      color: #ddf8ff;
+      background: rgba(8, 26, 59, 0.55);
+      font-size: 0.92rem;
+    }
+
+    .project-grid,
+    .notes-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .project-card,
+    .note-card,
+    .community-card,
+    .contact-card {
+      padding: 24px;
+    }
+
+    .project-card .tag,
+    .note-card .tag {
+      display: inline-block;
+      margin-bottom: 16px;
+      color: #bfeeff;
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .project-card h3,
+    .note-card h3,
+    .community-card h3,
+    .contact-card h3 {
+      margin: 0 0 12px;
+      font-size: 1.2rem;
+    }
+
+    .project-card p,
+    .note-card p,
+    .community-card p,
+    .contact-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .project-card ul {
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.7;
+      margin: 14px 0 0;
+    }
+
+    .community-wrap,
+    .contact-wrap {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 18px;
+    }
+
+    .community-card strong,
+    .contact-card strong {
+      color: #eaffff;
+    }
+
+    .contact-mail {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 18px;
+      padding: 14px 18px;
+      border-radius: 18px;
+      background: rgba(8, 25, 58, 0.72);
+      border: 1px solid rgba(118, 190, 255, 0.16);
+      font-weight: 700;
+      word-break: break-word;
+    }
+
+    footer {
+      padding: 24px 0 36px;
+      color: #91a9c8;
+      font-size: 0.95rem;
+    }
+
+    .footer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      border-top: 1px solid rgba(117, 190, 255, 0.1);
+      padding-top: 22px;
+    }
+
+    [data-lang] { display: none; }
+    html.lang-en [data-lang="en"],
+    html.lang-it [data-lang="it"] { display: block; }
+    html.lang-en span[data-lang="en"],
+    html.lang-it span[data-lang="it"],
+    html.lang-en a[data-lang="en"],
+    html.lang-it a[data-lang="it"] { display: inline; }
+
+    [data-lang] {
+  display: none;
+}
+
+.lang-en [data-lang="en"] {
+  display: revert;
+}
+
+.lang-it [data-lang="it"] {
+  display: revert;
+}
+
+    @media (max-width: 1024px) {
+      .hero-grid,
+      .two-col,
+      .project-grid,
+      .notes-grid,
+      .community-wrap,
+      .contact-wrap {
+        grid-template-columns: 1fr;
+      }
+      .visual-panel { min-height: 420px; }
+      .nav { align-items: flex-start; padding: 16px 0; }
+      .nav, .nav-links { flex-direction: column; }
+      .nav-links { align-items: flex-start; }
+      .section-head { align-items: flex-start; flex-direction: column; }
+    }
+
+    @media (max-width: 640px) {
+      .hero-panel, .project-card, .note-card, .community-card, .contact-card, .content-box { padding: 20px; }
+      .brand img { width: 128px; }
+      .mini-stats { grid-template-columns: 1fr; }
+      .hero h1 { max-width: none; }
+      .nav-links { gap: 16px; }
+    }
+  </style>
 </head>
-
 <body>
+  <div class="site-shell">
+    <header>
+      <div class="container nav">
+        <a class="brand" href="#top" aria-label="Manti Industries home">
+          <img src="logo-manti.png" alt="Manti Industries logo" />
+          <div class="brand-copy">
+            <strong>Manti Industries</strong>
+            <span data-lang="en">Independent Experimental Lab</span>
+            <span data-lang="it">Laboratorio sperimentale indipendente</span>
+          </div>
+        </a>
 
-  <video autoplay muted loop playsinline id="bg-video">
-    <source src="video_sfondo.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
+        <nav class="nav-links" aria-label="Primary">
+          <a href="#lab"><span data-lang="en">The Lab</span><span data-lang="it">Il Laboratorio</span></a>
+          <a href="#projects"><span data-lang="en">Projects</span><span data-lang="it">Progetti</span></a>
+          <a href="#notes"><span data-lang="en">Lab Notes</span><span data-lang="it">Lab Notes</span></a>
+          <a href="#community"><span data-lang="en">Circle</span><span data-lang="it">Cerchia</span></a>
+          <a href="#contact"><span data-lang="en">Contact</span><span data-lang="it">Contatti</span></a>
+          <div class="lang-toggle" aria-label="Language switcher">
+            <button type="button" class="active" data-set-lang="en">EN</button>
+            <button type="button" data-set-lang="it">IT</button>
+          </div>
+        </nav>
+      </div>
+    </header>
 
-  <div id="overlay">
-    <div id="countdown"></div>
-    <div id="date">7 March 2026</div>
-    <div id="notice">
-  <strong>Update:</strong> Activation window extended to <strong>7 March 2026</strong>.<br>
-  Large builds sometimes need a little more time.
+    <main id="top">
+      <section class="hero">
+        <div class="container hero-grid">
+          <div class="hero-panel">
+            <div class="eyebrow">
+              <span data-lang="en">Independent experimental lab</span>
+              <span data-lang="it">Laboratorio sperimentale indipendente</span>
+            </div>
+
+            <h1>
+              <span data-lang="en">Ideas become prototypes here.</span>
+              <span data-lang="it">Qui le idee diventano prototipi.</span>
+            </h1>
+
+            <p class="lead">
+              <span data-lang="en">Manti Industries is a personal laboratory exploring robotics, digital interfaces and experimental builds. Not a product catalog. Not a corporate showcase. A place where concepts are tested, documented and slowly turned into real systems.</span>
+              <span data-lang="it">Manti Industries è un laboratorio personale che esplora robotica, interfacce digitali e costruzioni sperimentali. Non è un catalogo prodotti. Non è una vetrina aziendale. È un luogo in cui i concetti vengono testati, documentati e trasformati lentamente in sistemi reali.</span>
+            </p>
+
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="#lab">
+                <span data-lang="en">Enter the Lab</span>
+                <span data-lang="it">Entra nel laboratorio</span>
+              </a>
+              <a class="btn btn-secondary" href="#contact">
+                <span data-lang="en">Write to the Lab</span>
+                <span data-lang="it">Scrivi al laboratorio</span>
+              </a>
+            </div>
+
+            <div class="mini-stats">
+<div>
+ <strong style="color:#fff;">
+  <span data-lang="en">Robotics</span>
+  <span data-lang="it">Robotica</span>
+</strong>
+  <p>
+    <span data-lang="en">Mechanical ideas, control systems, experiments and prototypes.</span>
+    <span data-lang="it">Idee meccaniche, sistemi di controllo, esperimenti e prototipi.</span>
+  </p>
 </div>
+<div>
+  <strong>
+    <span data-lang="en">Digital Worlds</span>
+    <span data-lang="it">Mondi digitali</span>
+  </strong>
+  <p>
+    <span data-lang="en">Interfaces, web experiments, immersive spaces and creative systems.</span>
+    <span data-lang="it">Interfacce, esperimenti web, spazi immersivi e sistemi creativi.</span>
+  </p>
+</div>
+<div>
+  <strong>
+    <span data-lang="en">Lab Notes</span>
+    <span data-lang="it">Lab Notes</span>
+  </strong>
+  <p>
+    <span data-lang="en">Slow updates, real progress, clear traces of what is being built.</span>
+    <span data-lang="it">Aggiornamenti lenti, progresso reale, tracce chiare di ciò che sta nascendo.</span>
+  </p>
+</div>
+            </div>
+          </div>
+
+          <div class="visual-panel" aria-hidden="true">
+  <div class="visual-badges">
+
+    <div class="glass-card">
+      <strong>
+        <span data-lang="en">No fixed roadmap</span>
+        <span data-lang="it">Nessuna roadmap rigida</span>
+      </strong>
+      <p>
+        <span data-lang="en">Projects evolve when the work is ready to be shown.</span>
+        <span data-lang="it">I progetti evolvono quando il lavoro è pronto per essere mostrato.</span>
+      </p>
+    </div>
+
+    <div class="glass-card">
+      <strong>
+        <span data-lang="en">Real build process</span>
+        <span data-lang="it">Processo reale di costruzione</span>
+      </strong>
+
+      <p>
+        <span data-lang="en">Ideas, tests, mistakes, corrections and working versions.</span>
+        <span data-lang="it">Idee, test, errori, correzioni e versioni funzionanti.</span>
+      </p>
+    </div>
+
+    <div class="glass-card">
+      <strong>
+        <span data-lang="en">Open circle</span>
+        <span data-lang="it">Cerchia aperta</span>
+      </strong>
+
+      <p>
+        <span data-lang="en">A space for people who want to observe and follow the lab.</span>
+        <span data-lang="it">Uno spazio per chi vuole osservare e seguire il laboratorio.</span>
+      </p>
+    </div>
 
   </div>
+</div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-  <script src="countdown.js"></script>
+      <section id="lab">
+        <div class="container">
+          <div class="section-head">
+            <div>
+              <div class="eyebrow">
+                <span data-lang="en">The Lab</span>
+                <span data-lang="it">Il Laboratorio</span>
+              </div>
+              <h2>
+                <span data-lang="en">A place to test difficult ideas quietly.</span>
+                <span data-lang="it">Un posto dove testare idee difficili con calma.</span>
+              </h2>
+            </div>
+          </div>
+
+          <div class="two-col">
+            <div class="content-box">
+              <p>
+<span data-lang="en">
+Manti Industries is not presented as a traditional company website.
+It works more like a digital base of operations: a place where visitors can understand the vision, follow selected projects and observe work in progress.
+</span>
+
+<span data-lang="it">
+Manti Industries non è presentata come un sito aziendale tradizionale.
+Funziona più come una base operativa digitale: un luogo in cui i visitatori possono capire la visione, seguire progetti selezionati e osservare il lavoro in corso.
+</span>
+</p>
+
+<p>
+<span data-lang="en">
+The lab is independent, experimental and personal.
+</span>
+
+<span data-lang="it">
+Il laboratorio è indipendente, sperimentale e personale.
+</span>
+</p>
+            </div>
+            <div class="content-box">
+              <p>
+<span data-lang="en">
+This is where prototypes, experiments and development notes are collected.
+</span>
+
+<span data-lang="it">
+Qui vengono raccolti prototipi, esperimenti e appunti di sviluppo.
+</span>
+</p>
+
+<p>
+<span data-lang="en">
+Some projects will remain experiments. Others may evolve into real systems over time.
+</span>
+
+<span data-lang="it">
+Alcuni progetti resteranno esperimenti. Altri potranno evolvere nel tempo in sistemi reali.
+</span>
+</p>
+              <div class="chip-list">
+                <span class="chip" data-lang="en">Robotics</span>
+                <span class="chip" data-lang="it">Robotica</span>
+                <span class="chip" data-lang="en">Interfaces</span>
+                <span class="chip" data-lang="it">Interfacce</span>
+                <span class="chip" data-lang="en">Experimental Builds</span>
+                <span class="chip" data-lang="it">Costruzioni sperimentali</span>
+                <span class="chip" data-lang="en">Lab Notes</span>
+                <span class="chip" data-lang="it">Lab Notes</span>
+                <span class="chip" data-lang="en">Creative Systems</span>
+                <span class="chip" data-lang="it">Sistemi creativi</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="projects">
+        <div class="container">
+          <div class="section-head">
+            <div>
+              <div class="eyebrow">
+                <span data-lang="en">Selected Areas</span>
+                <span data-lang="it">Aree selezionate</span>
+              </div>
+              <h2>
+                <span data-lang="en">Projects can grow here over time.</span>
+                <span data-lang="it">Qui i progetti possono crescere nel tempo.</span>
+              </h2>
+            </div>
+            <p>
+              <span data-lang="en">These sections are intentionally written to work now, even before the final media is ready.</span>
+              <span data-lang="it">Queste sezioni sono volutamente scritte per funzionare già ora, anche prima che i contenuti media finali siano pronti.</span>
+            </p>
+          </div>
+
+          <div class="project-grid">
+            <article class="project-card">
+              <span class="tag" data-lang="en">Area 01</span>
+              <span class="tag" data-lang="it">Area 01</span>
+              <h3>
+                <span data-lang="en">Robotic Experiments</span>
+                <span data-lang="it">Esperimenti robotici</span>
+              </h3>
+              <p>
+                <span data-lang="en">Mechanical concepts, actuation studies, control ideas and long-term builds developed with an experimental mindset.</span>
+                <span data-lang="it">Concetti meccanici, studi di attuazione, idee di controllo e costruzioni a lungo termine sviluppate con una mentalità sperimentale.</span>
+              </p>
+            </article>
+
+            <article class="project-card">
+              <span class="tag" data-lang="en">Area 02</span>
+              <span class="tag" data-lang="it">Area 02</span>
+              <h3>
+                <span data-lang="en">Digital Interfaces</span>
+                <span data-lang="it">Interfacce digitali</span>
+              </h3>
+              <p>
+                <span data-lang="en">Web experiences, interaction design and digital environments that support how projects are explored and presented.</span>
+                <span data-lang="it">Esperienze web, interaction design e ambienti digitali che supportano il modo in cui i progetti vengono esplorati e presentati.</span>
+              </p>
+            </article>
+
+            <article class="project-card">
+              <span class="tag" data-lang="en">Area 03</span>
+              <span class="tag" data-lang="it">Area 03</span>
+              <h3>
+                <span data-lang="en">Experimental Archive</span>
+                <span data-lang="it">Archivio sperimentale</span>
+              </h3>
+              <p>
+                <span data-lang="en">A future space for snapshots, prototypes, work traces and selected moments from the lab.</span>
+                <span data-lang="it">Uno spazio futuro per istantanee, prototipi, tracce di lavoro e momenti selezionati del laboratorio.</span>
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="notes">
+        <div class="container">
+          <div class="section-head">
+            <div>
+              <div class="eyebrow">
+                <span data-lang="en">Lab Notes</span>
+                <span data-lang="it">Lab Notes</span>
+              </div>
+              <h2>
+                <span data-lang="en">Not frequent. Just real.</span>
+                <span data-lang="it">Non frequenti. Solo reali.</span>
+              </h2>
+            </div>
+            <p>
+              <span data-lang="en">This section is perfect for slower updates: one note every two weeks is enough, as long as the notes come from real progress, decisions or experiments.</span>
+              <span data-lang="it">Questa sezione è perfetta per aggiornamenti più lenti: una nota ogni due settimane è sufficiente, purché nasca da progresso reale, decisioni o esperimenti.</span>
+            </p>
+          </div>
+
+          <div class="notes-grid">
+            <article class="note-card">
+              <span class="tag">LN-001</span>
+              <h3>
+                <span data-lang="en">What belongs in a Lab Note</span>
+                <span data-lang="it">Cosa appartiene a una Lab Note</span>
+              </h3>
+              <p>
+                <span data-lang="en">A problem, a direction change, a failed test, a mechanism, a sketch, a design choice. The note does not need to be long, only honest.</span>
+                <span data-lang="it">Un problema, un cambio di direzione, un test fallito, un meccanismo, uno sketch, una scelta progettuale. La nota non deve essere lunga, solo onesta.</span>
+              </p>
+            </article>
+            <article class="note-card">
+              <span class="tag">LN-002</span>
+              <h3>
+                <span data-lang="en">How this area will evolve</span>
+                <span data-lang="it">Come evolverà quest'area</span>
+              </h3>
+              <p>
+                <span data-lang="en">Later, each note can become a real post, with images, embedded videos or technical details. For now, this creates the right structure and tone.</span>
+                <span data-lang="it">Più avanti, ogni nota potrà diventare un vero post, con immagini, video incorporati o dettagli tecnici. Per ora, questa sezione crea la struttura e il tono giusti.</span>
+              </p>
+            </article>
+            <article class="note-card">
+              <span class="tag">LN-003</span>
+              <h3>
+                <span data-lang="en">No pressure publishing</span>
+                <span data-lang="it">Pubblicazione senza pressione</span>
+              </h3>
+              <p>
+                <span data-lang="en">The lab speaks when there is something worth showing. This makes the site sustainable and more aligned with real experimental work.</span>
+                <span data-lang="it">Il laboratorio parla quando c'è davvero qualcosa che vale la pena mostrare. Questo rende il sito sostenibile e più allineato al lavoro sperimentale reale.</span>
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="community">
+        <div class="container community-wrap">
+          <div class="community-card">
+<div class="eyebrow">
+<span data-lang="en">LAB CIRCLE</span>
+<span data-lang="it">LAB CIRCLE</span>
+</div>
+
+<h3>
+<span data-lang="en">Join the public lab community.</span>
+<span data-lang="it">Entra nella community pubblica del laboratorio.</span>
+</h3>
+
+<p>
+<span data-lang="en">
+The WhatsApp community is the simplest way to follow updates, react to new work and stay connected to the world of Manti Industries.
+</span>
+
+<span data-lang="it">
+La community WhatsApp è il modo più semplice per seguire gli aggiornamenti, reagire ai nuovi lavori e restare connessi al mondo di Manti Industries.
+</span>
+</p>
+<a class="btn btn-primary"
+href="https://chat.whatsapp.com/DPRXPfbVmxmLNkHuRvcR9L"
+target="_blank"
+rel="noopener noreferrer">
+
+<span data-lang="en">Join on WhatsApp</span>
+<span data-lang="it">Entra su WhatsApp</span>
+</a>
+          </div>
+          <div class="community-card">
+            <h3>
+<span data-lang="en">What the community is for</span>
+<span data-lang="it">A cosa serve la community</span>
+</h3>
+
+<p>
+<span data-lang="en">
+It is a shared space for people interested in the lab, its projects and the long-term evolution of Manti Industries.
+</span>
+
+<span data-lang="it">
+È uno spazio condiviso per chi è interessato al laboratorio, ai progetti e all'evoluzione di Manti Industries nel tempo.
+</span>
+</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact">
+        <div class="container contact-wrap">
+          <div class="contact-card">
+            <div class="eyebrow">
+<span data-lang="en">CONTACT</span>
+<span data-lang="it">CONTATTI</span>
+</div>
+
+<h3>
+<span data-lang="en">Open channel to the lab</span>
+<span data-lang="it">Canale aperto verso il laboratorio</span>
+</h3>
+<p>
+<span data-lang="en">
+For direct messages, collaborations or questions, email remains the main contact point of the lab.
+</span>
+<span data-lang="it">
+Per messaggi diretti, collaborazioni o domande, l'email resta il principale punto di contatto del laboratorio.
+</span>
+</p>
+<a class="contact-mail" href="mailto:info@manti-industries.com">info@manti-industries.com</a>
+</div>
+          <div class="contact-card">
+<h3>
+<span data-lang="en">The lab is evolving</span>
+<span data-lang="it">Il laboratorio è in evoluzione</span>
+</h3>
+
+<p>
+<span data-lang="en">
+This space documents experiments, prototypes and ideas in development.
+New projects, images and notes from the lab will be published over time.
+</span>
+
+<span data-lang="it">
+Questo spazio documenta esperimenti, prototipi e idee in sviluppo.
+Nuovi progetti, immagini e note dal laboratorio verranno pubblicati nel tempo.
+</span>
+</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container footer-row">
+        <span data-lang="en">Manti Industries — Independent Experimental Lab</span>
+        <span data-lang="it">Manti Industries — Laboratorio sperimentale indipendente</span>
+        <span data-lang="en">Built to grow slowly, clearly and for real.</span>
+        <span data-lang="it">Costruito per crescere lentamente, con chiarezza e in modo reale.</span>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const root = document.documentElement;
+    const buttons = document.querySelectorAll('[data-set-lang]');
+    const savedLang = localStorage.getItem('manti-lang') || 'en';
+
+    function setLang(lang) {
+      root.classList.remove('lang-en', 'lang-it');
+      root.classList.add(`lang-${lang}`);
+      buttons.forEach(btn => btn.classList.toggle('active', btn.dataset.setLang === lang));
+      localStorage.setItem('manti-lang', lang);
+      document.documentElement.lang = lang === 'it' ? 'it' : 'en';
+    }
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => setLang(btn.dataset.setLang));
+    });
+
+    setLang(savedLang);
+  </script>
 </body>
 </html>
